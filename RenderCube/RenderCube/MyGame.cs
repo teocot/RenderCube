@@ -113,7 +113,7 @@ namespace RenderCube
         }
 
 
-        async void CreateScene()
+        void CreateScene()
         {
 
             // 3D scene with Octree
@@ -137,13 +137,14 @@ namespace RenderCube
             model1.SetMaterial(ResourceCache.GetMaterial("Materials/BoxMaterial.xml"));
 
 
-            //The shere material is set up the same as the box.
+            //The shere material is set up exactly the same as the box, 50/50.
             Material SphereMaterial = ResourceCache.GetMaterial("Materials/SphereMaterial.xml");
             StaticModel model2 = model2Node.CreateComponent<StaticModel>();
             model2.Model = ResourceCache.GetModel("Models/Sphere.mdl");
             model2.SetMaterial(SphereMaterial);
 
             //yes, we can change things up on the fly, giving the sphere 100% refract color, and no texture/cubemap
+            SphereMaterial.SetShaderParameter("RefractIndex", 0.7f);
             SphereMaterial.SetShaderParameter("RefractColor", new Vector3(1.0f, 1.0f, 1.0f));
             SphereMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(0.0f, 0.0f, 0.0f));
             SphereMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f,1.0f));
@@ -214,7 +215,7 @@ namespace RenderCube
             CameraNode.LookAt(CameraNode.CenterPosition(), Vector3.UnitY, TransformSpace.World);
 
             //NOTE:
-            //this function is a bit of a hack, because the CameraNode is really a LookSphereNode,
+            //using this function is a bit of a hack, because the CameraNode is really a LookSphereNode,
             //and is locked to the sphere around CameraNode.CenterPosition.
         }
 
