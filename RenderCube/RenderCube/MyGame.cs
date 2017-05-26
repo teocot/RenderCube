@@ -99,6 +99,7 @@ namespace RenderCube
             base.Start();
         }
 
+        //this tells the game engine to use the joystick and zoom in (only on android and IOS)
         protected string JoystickLayoutPatch => JoystickLayoutPatches.WithZoomInAndOut;
 
         protected override void OnUpdate(float timeStep)
@@ -115,9 +116,8 @@ namespace RenderCube
         async void CreateScene()
         {
 
-
             // 3D scene with Octree
-            var scene = new Scene(Context);
+            scene = new Scene(Context);
             scene.CreateComponent<Octree>();
 
             // Box	
@@ -163,8 +163,9 @@ namespace RenderCube
             skybox.Model = ResourceCache.GetModel("Models/Box.mdl");
             skybox.SetMaterial(ResourceCache.GetMaterial("Materials/Skybox3.xml"));
 
+            var origin = new Vector3(0.0f, 0.0f, 0.0f);
             // Camera
-            CameraNode = new LookSphereNode(name: "camera", center: () => skyNode.Position);
+            CameraNode = new LookSphereNode(name: "camera", center: () => origin);
             CameraNode.Radius = 4.0f;
             //CameraNode.Phi = 3.14f/2.0f;
             scene.AddChild(CameraNode);
@@ -179,25 +180,6 @@ namespace RenderCube
             //await boxNode.RunActionsAsync(new RepeatForever(
             // new RotateBy(duration: 5, deltaAngleX: 0, deltaAngleY: 90, deltaAngleZ: 0)));
         }
-
-
-        protected bool IsLogoVisible
-        {
-            get { return logoSprite.Visible; }
-            set { logoSprite.Visible = value; }
-        }
-
-        static readonly Random random = new Random();
-        /// Return a random float between 0.0 (inclusive) and 1.0 (exclusive.)
-        public static float NextRandom() { return (float)random.NextDouble(); }
-        /// Return a random float between 0.0 and range, inclusive from both ends.
-        public static float NextRandom(float range) { return (float)random.NextDouble() * range; }
-        /// Return a random float between min and max, inclusive from both ends.
-        public static float NextRandom(float min, float max) { return (float)((random.NextDouble() * (max - min)) + min); }
-        /// Return a random integer between min and max - 1.
-        public static int NextRandom(int min, int max) { return random.Next(min, max); }
-
-
 
         /// <summary>
         /// Move camera for 2D samples
@@ -230,29 +212,10 @@ namespace RenderCube
             }
 
             CameraNode.LookAt(CameraNode.CenterPosition(), Vector3.UnitY, TransformSpace.World);
-        }
 
-        /// <summary>
-        /// Move camera for 3D samples
-        /// </summary>
-        protected void SimpleMoveCamera3D(float timeStep, float moveSpeed = 10.0f)
-        {
-            const float mouseSensitivity = .1f;
-
-            if (UI.FocusElement != null)
-                return;
-
-            var mouseMove = Input.MouseMove;
-            Yaw += mouseSensitivity * mouseMove.X;
-            Pitch += mouseSensitivity * mouseMove.Y;
-            Pitch = MathHelper.Clamp(Pitch, -90, 90);
-
-            CameraNode.Rotation = new Quaternion(Pitch, Yaw, 0);
-
-            if (Input.GetKeyDown(Key.W)) CameraNode.Translate(Vector3.UnitZ * moveSpeed * timeStep);
-            if (Input.GetKeyDown(Key.S)) CameraNode.Translate(-Vector3.UnitZ * moveSpeed * timeStep);
-            if (Input.GetKeyDown(Key.A)) CameraNode.Translate(-Vector3.UnitX * moveSpeed * timeStep);
-            if (Input.GetKeyDown(Key.D)) CameraNode.Translate(Vector3.UnitX * moveSpeed * timeStep);
+            //NOTE:
+            //this function is a bit of a hack, because the CameraNode is really a LookSphereNode,
+            //and is locked to the sphere around CameraNode.CenterPosition.
         }
 
         protected void MoveCameraByTouches(float timeStep)
