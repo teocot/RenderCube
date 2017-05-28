@@ -223,7 +223,11 @@ namespace RenderCube
         {
             if (!TouchEnabled || CameraNode == null)
                 return;
-
+            //if(Input.NumTouches == 0)
+            //{
+            //    if (Pitch > 0) Pitch = MathHelper.Clamp(Pitch - (0.01f * timeStep), 0, 100);
+            //    if (Yaw > 0) Yaw = MathHelper.Clamp(Yaw - (0.01f * timeStep), 0, 100);
+            //}
             var input = Input;
             for (uint i = 0, num = input.NumTouches; i < num; ++i)
             {
@@ -239,11 +243,13 @@ namespace RenderCube
 
                     var graphics = Graphics;
 
-                    Yaw += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.X;
-                    Pitch += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.Y;
-                    //CameraNode.Rotation = new Quaternion(Pitch, Yaw, 0);
-                    CameraNode.Phi -= Yaw * timeStep * 0.01f;
-                    CameraNode.Theta -= Pitch * timeStep * 0.01f;
+                    //Yaw += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.X;
+                    //Pitch += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.Y;
+                    Pitch = (graphics.Height / 2) - state.Position.Y;
+                    Yaw = (graphics.Width / 2) - state.Position.X;
+                     //CameraNode.Rotation = new Quaternion(Pitch, Yaw, 0);
+                    CameraNode.Phi -= Pitch * timeStep * 0.01f;
+                    CameraNode.Theta -= Yaw * timeStep * 0.01f;
                 }
                 else
                 {
