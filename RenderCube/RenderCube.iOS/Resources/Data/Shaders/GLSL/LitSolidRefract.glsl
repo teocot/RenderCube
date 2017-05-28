@@ -55,13 +55,13 @@ varying vec4 vWorldPos;
 	#endif
 
 	//this is from the glsl 1.1 specification
-	vec3 refract(vec3 I, vec3 N, float eta) {
-		float k = 1.0 - eta * eta * (1.0 - dot(N, I) * dot(N, I));
-		if (k < 0.0)
-			return vec3(0.0, 0.0, 0.0); // or genDType(0.0)
-		else
-			return eta * I - (eta * dot(N, I) + sqrt(k)) * N;
-	}
+//	vec3 refract(vec3 I, vec3 N, float eta) {
+//		float k = 1.0 - eta * eta * (1.0 - dot(N, I) * dot(N, I));
+//		if (k < 0.0)
+//			return vec3(0.0, 0.0, 0.0); // or genDType(0.0)
+//		else
+//			return eta * I - (eta * dot(N, I) + sqrt(k)) * N;
+//	}
 #endif
 
 void VS()
