@@ -64,14 +64,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Fonts\Anonymous Pro.ttf" />
     <AndroidAsset Include="Assets\Data\Fonts\Font.ttf" />
     <AndroidAsset Include="Assets\Data\Models\Box.mdl" />
     <AndroidAsset Include="Assets\Data\Models\Sphere.mdl" />
-    <AndroidAsset Include="Assets\Data\Textures\xamarin.png" />
-    <AndroidAsset Include="Assets\Data\Fonts\Anonymous Pro.ttf" />
-    <AndroidAsset Include="Assets\Data\Textures\UrhoIcon.icns" />
     <AndroidAsset Include="Assets\Data\Models\Suzanne.mdl" />
     <AndroidAsset Include="Assets\Data\Shaders\GLSL\LitSolidRefract.glsl" />
+    <AndroidAsset Include="Assets\Data\Textures\UrhoIcon.icns" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -97,10 +96,25 @@
     <AndroidAsset Include="Assets\Data\Fonts\OFL.txt" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Materials\BoxMaterial.xml" />
+  </ItemGroup>
+  <ItemGroup>
     <AndroidAsset Include="Assets\Data\Materials\Skybox.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Data\Materials\Skybox2.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Materials\Skybox3.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Materials\SphereMaterial.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Techniques\DiffEnvCubeRefract.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Techniques\DiffNormalEnvCube.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Data\Textures\output_pmrem_negx.dds" />
@@ -142,6 +156,18 @@
     <AndroidAsset Include="Assets\Data\Textures\Skybox2.xml" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\Skybox3.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\T_ColorGrid.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\T_ColorGrid.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\TerrainWeights.dds" />
+  </ItemGroup>
+  <ItemGroup>
     <AndroidAsset Include="Assets\Data\Textures\TouchInput.png" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +187,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Data\Textures\WaterNoise.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\xamarin.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\xamarin.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Data\UI\DefaultStyle.xml" />
@@ -251,28 +283,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Data\UI\UILoadExample.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Textures\xamarin.dds" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Textures\Skybox3.xml">
-      <SubType>Designer</SubType>
-    </AndroidAsset>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Materials\Skybox3.xml">
-      <SubType>Designer</SubType>
-    </AndroidAsset>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Techniques\DiffEnvCubeRefract.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Materials\BoxMaterial.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Materials\SphereMaterial.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\..\packages\UrhoSharp.1.4.18\build\MonoAndroid\UrhoSharp.targets" Condition="Exists('..\..\packages\UrhoSharp.1.4.18\build\MonoAndroid\UrhoSharp.targets')" />

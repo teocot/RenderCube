@@ -72,8 +72,10 @@ namespace RenderCube
 
         protected override void Start()
         {
+            // Set style to the UI root so that elements will inherit it
+            UI.Root.SetDefaultStyle(ResourceCache.GetXmlFile("UI/DefaultStyle.xml"));
 
-            
+
             Log.LogMessage += e => Debug.WriteLine($"[{e.Level}] {e.Message}");
             TouchEnabled = true;
             if (Platform == Platforms.Android ||
@@ -96,6 +98,8 @@ namespace RenderCube
             Input.SubscribeToKeyDown(HandleKeyDown);
             CreateScene();
             //debugHud.ToggleAll();
+
+
             base.Start();
         }
 
@@ -119,7 +123,7 @@ namespace RenderCube
             // 3D scene with Octree
             scene = new Scene(Context);
             scene.CreateComponent<Octree>();
-
+            Button b = CreateButton(10, 10, 100, 100, "test");
             // Box	
             Node model1Node = scene.CreateChild(name: "Box node");
             model1Node.Position = new Vector3(x: 0, y: 0, z: 0.8f);
@@ -147,7 +151,7 @@ namespace RenderCube
             SphereMaterial.SetShaderParameter("RefractIndex", 0.7f);
             SphereMaterial.SetShaderParameter("RefractColor", new Vector3(1.0f, 1.0f, 1.0f));
             SphereMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(0.0f, 0.0f, 0.0f));
-            SphereMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f,1.0f));
+            SphereMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
             // Light
             Node lightNode = scene.CreateChild(name: "light");
@@ -174,6 +178,8 @@ namespace RenderCube
 
             // Viewport
             Renderer.SetViewport(0, new Viewport(Context, scene, camera, null));
+
+
 
             // Do actions
             //await model1Node.RunActionsAsync(new EaseBounceOut(new ScaleTo(duration: 1f, scale: 1)));
@@ -219,6 +225,50 @@ namespace RenderCube
             //and is locked to the sphere around CameraNode.CenterPosition.
         }
 
+        void InitWindow()
+        {
+        //    // Create the Window and add it to the UI's root node
+        //    window = new Window();
+        //    uiRoot.AddChild(window);
+
+        //    // Set Window size and layout settings
+        //    window.SetMinSize(384, 192);
+        //    window.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
+        //    window.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
+        //    window.Name = "Window";
+
+        //    // Create Window 'titlebar' container
+        //    UIElement titleBar = new UIElement();
+        //    titleBar.SetMinSize(0, 24);
+        //    titleBar.VerticalAlignment = VerticalAlignment.Top;
+        //    titleBar.LayoutMode = LayoutMode.Horizontal;
+
+        //    // Create the Window title Text
+        //    var windowTitle = new Text();
+        //    windowTitle.Name = "WindowTitle";
+        //    windowTitle.Value = "Hello GUI!";
+
+        //    // Create the Window's close button
+        //    Button buttonClose = new Button();
+        //    buttonClose.Name = "CloseButton";
+
+        //    // Add the controls to the title bar
+        //    titleBar.AddChild(windowTitle);
+        //    titleBar.AddChild(buttonClose);
+
+        //    // Add the title bar to the Window
+        //    window.AddChild(titleBar);
+
+        //    // Apply styles
+        //    window.SetStyleAuto(null);
+        //    windowTitle.SetStyleAuto(null);
+        //    buttonClose.SetStyle("CloseButton", null);
+
+        //    buttonClose.SubscribeToReleased(_ => Exit());
+
+        //    // Subscribe also to all UI mouse clicks just to see where we have clicked
+        //    UI.SubscribeToUIMouseClick(HandleControlClicked);
+        }
         protected void MoveCameraByTouches(float timeStep)
         {
             if (!TouchEnabled || CameraNode == null)
@@ -247,7 +297,7 @@ namespace RenderCube
                     //Pitch += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.Y;
                     Pitch = (graphics.Height / 2) - state.Position.Y;
                     Yaw = (graphics.Width / 2) - state.Position.X;
-                     //CameraNode.Rotation = new Quaternion(Pitch, Yaw, 0);
+                    //CameraNode.Rotation = new Quaternion(Pitch, Yaw, 0);
                     CameraNode.Phi -= Pitch * timeStep * 0.01f;
                     CameraNode.Theta -= Yaw * timeStep * 0.01f;
                 }
@@ -279,26 +329,71 @@ namespace RenderCube
             UI.Root.AddChild(textElement);
         }
 
-        void CreateLogo()
+        Slider CreateSlider(int x, int y, int xSize, int ySize, string text)
         {
+            UIElement root = UI.Root;
+            ResourceCache cache = ResourceCache;
+            Font font = cache.GetFont("Fonts/Anonymous Pro.ttf");
+            // Create text and slider below it
+            Text sliderText = new Text();
+            root.AddChild(sliderText);
+            sliderText.SetPosition(x, y);
+            sliderText.SetFont(font, 12);
+            sliderText.Value = text;
 
-            var logoTexture = ResourceCache.GetTexture2D("Textures/LogoLarge.png");
+            Slider slider = new Slider();
+            root.AddChild(slider);
+            slider.SetStyleAuto(null);
+            slider.SetPosition(x, y + 20);
+            slider.SetSize(xSize, ySize);
+            // Use 0-1 range for controlling sound/music master volume
+            slider.Range = 1.0f;
 
-            if (logoTexture == null)
-                return;
-
-            ui = UI;
-            logoSprite = ui.Root.CreateSprite();
-            logoSprite.Texture = logoTexture;
-            int w = logoTexture.Width;
-            int h = logoTexture.Height;
-            logoSprite.SetScale(256.0f / w);
-            logoSprite.SetSize(w, h);
-            logoSprite.SetHotSpot(0, h);
-            logoSprite.SetAlignment(HorizontalAlignment.Left, VerticalAlignment.Bottom);
-            logoSprite.Opacity = 0.75f;
-            logoSprite.Priority = -100;
+            return slider;
         }
+        Button CreateButton(int x, int y, int xSize, int ySize, string text)
+        {
+            UIElement root = UI.Root;
+            var cache = ResourceCache;
+            Font font = cache.GetFont("Fonts/Font.ttf");
+
+            // Create the button and center the text onto it
+            Button button = new Button();
+            root.AddChild(button);
+            button.SetStyleAuto(null);
+            button.SetPosition(x, y);
+            button.SetSize(xSize, ySize);
+
+            Text buttonText = new Text();
+            button.AddChild(buttonText);
+            buttonText.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
+            buttonText.SetFont(font, 20);
+            buttonText.Value = text;
+
+            return button;
+        }
+
+
+        //void CreateLogo()
+        //{
+
+        //    var logoTexture = ResourceCache.GetTexture2D("Textures/LogoLarge.png");
+
+        //    if (logoTexture == null)
+        //        return;
+
+        //    ui = UI;
+        //    logoSprite = ui.Root.CreateSprite();
+        //    logoSprite.Texture = logoTexture;
+        //    int w = logoTexture.Width;
+        //    int h = logoTexture.Height;
+        //    logoSprite.SetScale(256.0f / w);
+        //    logoSprite.SetSize(w, h);
+        //    logoSprite.SetHotSpot(0, h);
+        //    logoSprite.SetAlignment(HorizontalAlignment.Left, VerticalAlignment.Bottom);
+        //    logoSprite.Opacity = 0.75f;
+        //    logoSprite.Priority = -100;
+        //}
 
         void SetWindowAndTitleIcon()
         {
@@ -411,5 +506,8 @@ namespace RenderCube
             var screenJoystickIndex = Input.AddScreenJoystick(layout, ResourceCache.GetXmlFile("UI/DefaultStyle.xml"));
             Input.SetScreenJoystickVisible(screenJoystickIndex, true);
         }
+
+
+
     }
 }
