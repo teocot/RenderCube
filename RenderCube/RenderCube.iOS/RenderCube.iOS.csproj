@@ -209,6 +209,8 @@
     <BundleResource Include="Resources\Data\Fonts\Anonymous Pro.ttf" />
     <BundleResource Include="Resources\Data\Shaders\GLSL\LitSolidRefract.glsl" />
     <BundleResource Include="Resources\Data\Textures\UrhoIcon.icns" />
+    <BundleResource Include="Resources\Data\Models\Suzanne.mdl" />
+    <BundleResource Include="Resources\Data\Models\Teapot.mdl" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

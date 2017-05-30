@@ -128,7 +128,7 @@ namespace RenderCube
             Node model1Node = scene.CreateChild(name: "Box node");
             model1Node.Position = new Vector3(x: 0, y: 0, z: 0.8f);
             model1Node.SetScale(1f);
-            model1Node.Rotation = new Quaternion(x: 0, y: 0, z: 0);
+            model1Node.Rotation = new Quaternion(x: 0, y: 90, z: 0);
 
             Node model2Node = scene.CreateChild(name: "Sphere node");
             model2Node.Position = new Vector3(x: 0, y: 0, z: -0.8f);
@@ -136,16 +136,20 @@ namespace RenderCube
             model2Node.Rotation = new Quaternion(x: 0, y: 0, z: 0);
 
             //The box material is set up as 50% texture and 50% cubemap
+            Material BoxMaterial = ResourceCache.GetMaterial("Materials/BoxMaterial.xml");
             StaticModel model1 = model1Node.CreateComponent<StaticModel>();
-            model1.Model = ResourceCache.GetModel("Models/Box.mdl");
-            model1.SetMaterial(ResourceCache.GetMaterial("Materials/BoxMaterial.xml"));
+            model1.Model = ResourceCache.GetModel("Models/Teapot.mdl");
+            model1.SetMaterial(BoxMaterial);
+            BoxMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(1.0f, 1.0f, 1.0f));
+            BoxMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
 
             //The shere material is set up exactly the same as the box, 50/50.
             Material SphereMaterial = ResourceCache.GetMaterial("Materials/SphereMaterial.xml");
             StaticModel model2 = model2Node.CreateComponent<StaticModel>();
-            model2.Model = ResourceCache.GetModel("Models/Sphere.mdl");
+            model2.Model = ResourceCache.GetModel("Models/Suzanne.mdl");
             model2.SetMaterial(SphereMaterial);
+
 
             //yes, we can change things up on the fly, giving the sphere 100% refract color, and no texture/cubemap
             SphereMaterial.SetShaderParameter("RefractIndex", 0.7f);
@@ -333,7 +337,7 @@ namespace RenderCube
         {
             UIElement root = UI.Root;
             ResourceCache cache = ResourceCache;
-            Font font = cache.GetFont("Fonts/Anonymous Pro.ttf");
+            Font font = cache.GetFont("Fonts/Font.ttf");
             // Create text and slider below it
             Text sliderText = new Text();
             root.AddChild(sliderText);

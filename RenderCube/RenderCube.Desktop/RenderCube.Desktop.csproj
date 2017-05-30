@@ -199,6 +199,9 @@
     <Content Include="Data\Models\Suzanne.mdl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\Models\Teapot.mdl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="RenderCube.Desktop_TemporaryKey.pfx" />
   </ItemGroup>

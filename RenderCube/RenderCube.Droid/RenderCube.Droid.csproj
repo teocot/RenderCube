@@ -68,9 +68,14 @@
     <AndroidAsset Include="Assets\Data\Fonts\Font.ttf" />
     <AndroidAsset Include="Assets\Data\Models\Box.mdl" />
     <AndroidAsset Include="Assets\Data\Models\Sphere.mdl" />
-    <AndroidAsset Include="Assets\Data\Models\Suzanne.mdl" />
+    <AndroidAsset Include="Assets\Data\Models\Suzanne.mdl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
     <AndroidAsset Include="Assets\Data\Shaders\GLSL\LitSolidRefract.glsl" />
     <AndroidAsset Include="Assets\Data\Textures\UrhoIcon.icns" />
+    <AndroidAsset Include="Assets\Data\Models\Teapot.mdl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

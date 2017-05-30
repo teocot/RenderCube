@@ -53,7 +53,8 @@ varying vec4 vWorldPos;
 		uniform float cRefractIndex;
 		uniform vec3 cRefractColor;
 	#endif
-	
+
+	//this is from the glsl 1.1 specification
 	//this is from the glsl 1.1 specification
 //	vec3 refract(vec3 I, vec3 N, float eta) {
 //		float k = 1.0 - eta * eta * (1.0 - dot(N, I) * dot(N, I));
