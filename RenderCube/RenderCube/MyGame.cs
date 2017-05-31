@@ -26,7 +26,7 @@
 
 using System;
 using System.Diagnostics;
-//using System.Collections.Generic;
+using System.Collections.Generic;
 //using System.Linq;
 //using System.Threading.Tasks;
 using System.Globalization;
@@ -49,6 +49,12 @@ namespace RenderCube
         DebugHud debugHud;
         Sprite logoSprite;
         UI ui;
+        Dictionary<String, String> materials = new Dictionary<String, String>
+        {
+            {"SphereMaterial", "Materials/SphereMaterial.xml" },
+            {"BoxMaterial", "Materials/BoxMaterial.xml" },
+            {"TeapotMaterial", "Materials/TeapotMaterial.xml" }
+        };
 
         protected const float TouchSensitivity = 2;
         protected float Yaw { get; set; }
@@ -75,7 +81,7 @@ namespace RenderCube
             // Set style to the UI root so that elements will inherit it
             UI.Root.SetDefaultStyle(ResourceCache.GetXmlFile("UI/DefaultStyle.xml"));
 
-
+            
             Log.LogMessage += e => Debug.WriteLine($"[{e.Level}] {e.Message}");
             TouchEnabled = true;
             if (Platform == Platforms.Android ||
@@ -86,6 +92,8 @@ namespace RenderCube
             }
             if (Platform == Platforms.Windows)
             {
+                Input.SetMouseVisible(true, false);
+                //this.JoystickLayoutPatch = JoystickLayoutPatches.Hidden;
                 SimpleCreateInstructions("Control The Camera with WASD");
             }
             Input.Enabled = true;
@@ -123,7 +131,9 @@ namespace RenderCube
             // 3D scene with Octree
             scene = new Scene(Context);
             scene.CreateComponent<Octree>();
-            Button b = CreateButton(10, 10, 100, 100, "test");
+
+
+            //Button b = CreateButton(10, 10, 100, 100, "test");
             // Box	
             Node model1Node = scene.CreateChild(name: "Box node");
             model1Node.Position = new Vector3(x: 0, y: 0, z: 0.8f);
@@ -140,16 +150,49 @@ namespace RenderCube
             StaticModel model1 = model1Node.CreateComponent<StaticModel>();
             model1.Model = ResourceCache.GetModel("Models/Teapot.mdl");
             model1.SetMaterial(BoxMaterial);
-            BoxMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(1.0f, 1.0f, 1.0f));
-            BoxMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+            //BoxMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(1.0f, 1.0f, 1.0f));
+            //BoxMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
 
             //The shere material is set up exactly the same as the box, 50/50.
             Material SphereMaterial = ResourceCache.GetMaterial("Materials/SphereMaterial.xml");
             StaticModel model2 = model2Node.CreateComponent<StaticModel>();
-            model2.Model = ResourceCache.GetModel("Models/Suzanne.mdl");
+            model2.Model = ResourceCache.GetModel("Models/Sphere.mdl");
             model2.SetMaterial(SphereMaterial);
 
+            //Set up test material panel
+            MaterialPanel mp = new MaterialPanel(Context, SphereMaterial);
+            UI.Root.AddChild(mp);
+            mp.SetMinSize(300, 200);
+            mp.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
+            mp.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Bottom);
+            mp.Name = "Window";
+            mp.SetStyleAuto(null);
+            //UI.SubscribeToUIMouseClick(HandleControlClicked);
+            // Create Window 'titlebar' container
+            UIElement titleBar = new UIElement();
+            titleBar.SetMinSize(0, 24);
+            titleBar.VerticalAlignment = VerticalAlignment.Top;
+            titleBar.LayoutMode = LayoutMode.Horizontal;
+
+            // Create the Window title Text
+            var windowTitle = new Text();
+            windowTitle.Name = "WindowTitle";
+            windowTitle.Value = "Hello GUI!";
+
+            // Create the Window's close button
+            Button buttonClose = new Button();
+            buttonClose.Name = "CloseButton";
+
+            // Add the controls to the title bar
+            titleBar.AddChild(windowTitle);
+            titleBar.AddChild(buttonClose);
+
+            mp.AddChild(titleBar);
+            windowTitle.SetStyleAuto(null);
+            buttonClose.SetStyle("CloseButton", null);
+
+            buttonClose.SubscribeToReleased(_ => Exit());
 
             //yes, we can change things up on the fly, giving the sphere 100% refract color, and no texture/cubemap
             SphereMaterial.SetShaderParameter("RefractIndex", 0.7f);
@@ -182,8 +225,10 @@ namespace RenderCube
 
             // Viewport
             Renderer.SetViewport(0, new Viewport(Context, scene, camera, null));
-
-
+            
+            //String filename = ResourceCache.GetResourceFileName("Scenes/Scene.xml");
+            //Urho.IO.File file = new Urho.IO.File(Context,filename, Urho.IO.FileMode.ReadWrite);
+            //scene.SaveXml(file, "\t");
 
             // Do actions
             //await model1Node.RunActionsAsync(new EaseBounceOut(new ScaleTo(duration: 1f, scale: 1)));

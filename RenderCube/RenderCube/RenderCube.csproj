@@ -34,9 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MaterialPanel.cs" />
     <Compile Include="LookSphereNode.cs" />
     <Compile Include="JoystickLayoutPatches.cs" />
     <Compile Include="MyGame.cs" />
+    <Compile Include="Panel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
