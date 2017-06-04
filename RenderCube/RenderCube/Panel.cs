@@ -20,20 +20,36 @@ namespace RenderCube
 
             //Font font = cache.GetFont("Fonts/Font.ttf");
             //// Create text and slider below it
+            UIElement labelslider = new UIElement();
+            labelslider.LayoutMode = LayoutMode.Horizontal;
+            labelslider.SetStyleAuto(null);
             Text sliderText = new Text();
-            this.AddChild(sliderText);
+            labelslider.AddChild(sliderText);
             sliderText.SetPosition(x, y);
-            //sliderText.SetFont(font, 12);
+            sliderText.LayoutFlexScale = new Vector2(0,0);
+                //sliderText.SetFont(font, 12);
             sliderText.Value = text;
 
+            //int width = 0;
+            //for(uint i = 0; i < text.Length; i++)
+            //    width += sliderText.GetCharSize(i).X;
+            sliderText.SetMinSize(0, 0);
+            //sliderText.SetFixedWidth(width);
+
+            sliderText.SetStyleAuto(null);
             Slider slider = new Slider();
-            this.AddChild(slider);
-            //slider.SetStyleAuto(null);
+            labelslider.AddChild(slider);
+            
             slider.SetPosition(x, y + 20);
             slider.SetSize(xSize, ySize);
             // Use 0-1 range for controlling sound/music master volume
             slider.Range = 1.0f;
+            slider.SetMaxSize(500, ySize);
+            slider.SetStyleAuto(null);
 
+            //labelslider.SetEnabledRecursive(true);
+            labelslider.SetStyleAuto(null);
+            this.AddChild(labelslider);
             return slider;
         }
         Button CreateButton(int x, int y, int xSize, int ySize, string text)
@@ -56,5 +72,14 @@ namespace RenderCube
 
             return button;
         }
+        //public new bool SetStyleAuto(Urho.Resources.XmlFile file)
+        //{
+        //    bool ret = base.SetStyleAuto(file);
+        //    foreach (UIElement e in this.Children)
+        //    {
+        //        ret = ret && e.SetStyleAuto(file);
+        //    }
+        //    return ret;
+        //}
     }
 }

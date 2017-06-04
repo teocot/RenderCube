@@ -161,44 +161,18 @@ namespace RenderCube
             model2.SetMaterial(SphereMaterial);
 
             //Set up test material panel
-            MaterialPanel mp = new MaterialPanel(Context, SphereMaterial);
-            UI.Root.AddChild(mp);
-            mp.SetMinSize(300, 200);
-            mp.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
-            mp.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Bottom);
-            mp.Name = "Window";
-            mp.SetStyleAuto(null);
+            MaterialPanel mp = new MaterialPanel(Context,UI.Root,  SphereMaterial);
+            mp.Visible = true;
+            //mp.SetStyleAuto(null);
             //UI.SubscribeToUIMouseClick(HandleControlClicked);
-            // Create Window 'titlebar' container
-            UIElement titleBar = new UIElement();
-            titleBar.SetMinSize(0, 24);
-            titleBar.VerticalAlignment = VerticalAlignment.Top;
-            titleBar.LayoutMode = LayoutMode.Horizontal;
-
-            // Create the Window title Text
-            var windowTitle = new Text();
-            windowTitle.Name = "WindowTitle";
-            windowTitle.Value = "Hello GUI!";
-
-            // Create the Window's close button
-            Button buttonClose = new Button();
-            buttonClose.Name = "CloseButton";
-
-            // Add the controls to the title bar
-            titleBar.AddChild(windowTitle);
-            titleBar.AddChild(buttonClose);
-
-            mp.AddChild(titleBar);
-            windowTitle.SetStyleAuto(null);
-            buttonClose.SetStyle("CloseButton", null);
-
-            buttonClose.SubscribeToReleased(_ => Exit());
+             
 
             //yes, we can change things up on the fly, giving the sphere 100% refract color, and no texture/cubemap
             SphereMaterial.SetShaderParameter("RefractIndex", 0.7f);
             SphereMaterial.SetShaderParameter("RefractColor", new Vector3(1.0f, 1.0f, 1.0f));
             SphereMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(0.0f, 0.0f, 0.0f));
             SphereMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+            mp.SetIORValue(0.7f);
 
             // Light
             Node lightNode = scene.CreateChild(name: "light");
@@ -320,6 +294,9 @@ namespace RenderCube
         }
         protected void MoveCameraByTouches(float timeStep)
         {
+            if (UI.FocusElement != null)
+                return;
+
             if (!TouchEnabled || CameraNode == null)
                 return;
             //if(Input.NumTouches == 0)
@@ -478,6 +455,7 @@ namespace RenderCube
                     return;
                 case Key.Up:
                     return;
+              
             }
 
             var renderer = Renderer;
