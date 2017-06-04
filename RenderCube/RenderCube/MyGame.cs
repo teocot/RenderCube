@@ -103,7 +103,7 @@ namespace RenderCube
             //CreateLogo();
             SetWindowAndTitleIcon();
             CreateConsoleAndDebugHud();
-            Input.SubscribeToKeyDown(HandleKeyDown);
+            Input.KeyDown += HandleKeyDown;
             CreateScene();
             //debugHud.ToggleAll();
 
@@ -117,7 +117,7 @@ namespace RenderCube
         protected override void OnUpdate(float timeStep)
         {
 
-            MoveCameraByTouches(timeStep);
+            //MoveCameraByTouches(timeStep);
             base.OnUpdate(timeStep);
 
             SimpleMoveCamera2D(timeStep);
@@ -161,18 +161,17 @@ namespace RenderCube
             model2.SetMaterial(SphereMaterial);
 
             //Set up test material panel
-            MaterialPanel mp = new MaterialPanel(Context,UI.Root,  SphereMaterial);
+            MaterialPanel mp = new MaterialPanel(UI.Root,  SphereMaterial);
             mp.Visible = true;
             //mp.SetStyleAuto(null);
             //UI.SubscribeToUIMouseClick(HandleControlClicked);
              
 
             //yes, we can change things up on the fly, giving the sphere 100% refract color, and no texture/cubemap
-            SphereMaterial.SetShaderParameter("RefractIndex", 0.7f);
+            SphereMaterial.SetShaderParameter("RefractIndex", 0.66f);
             SphereMaterial.SetShaderParameter("RefractColor", new Vector3(1.0f, 1.0f, 1.0f));
             SphereMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(0.0f, 0.0f, 0.0f));
             SphereMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
-            mp.SetIORValue(0.7f);
 
             // Light
             Node lightNode = scene.CreateChild(name: "light");

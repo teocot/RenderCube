@@ -9,17 +9,18 @@ namespace RenderCube
 {
     class MaterialPanel : Panel
     {
-        Slider IORSlider;
-        Slider TestSlider;
+        RangeSlider IORSlider;
+        RangeSlider TestSlider;
         Material material;
-        public MaterialPanel(Context c, UIElement parent, Material m) : base(c)
+
+        public MaterialPanel( UIElement parent, Material m) : base()
         {
             material = m;
 
             parent.AddChild(this);
             this.SetStyleAuto(null);
 
-            this.SetMinSize(400, 200);
+            this.SetMinSize(600, 200);
             this.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
             this.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Bottom);
             this.Name = "MaterialPanel";
@@ -48,9 +49,12 @@ namespace RenderCube
 
             //buttonClose.SubscribeToReleased(_ => Exit());
 
-            IORSlider = this.CreateSlider(10, 10, 100, 20, "Index of Refraction");
-            TestSlider = this.CreateSlider(0, 20, 100, 20, "TEST");
-            IORSlider.SliderChanged += (args => material.SetShaderParameter("RefractIndex", args.Value));
+            IORSlider = this.CreateSlider("Ior Ratio", 0.0f, 1.0f);
+            IORSlider.SliderChanged +=
+                (args => material.SetShaderParameter("RefractIndex", args.Value));
+            IORSlider.Value = 0.666f;
+            //TestSlider = this.CreateSlider(0, 20, 100, 20, "TEST", (args => { }));
+ 
             //IORSlider.SetStyleAuto(this.GetDefaultStyle(true));
             
             //this.SetStyleAuto(null);

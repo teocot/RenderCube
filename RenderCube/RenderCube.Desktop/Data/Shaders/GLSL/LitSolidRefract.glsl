@@ -263,7 +263,7 @@ void PS()
             finalColor += cMatEnvMapColor * textureCube(sEnvCubeMap, reflect(vReflectionVec, normal)).rgb;
         #endif
 		#ifdef REFRACT
-			vec3 refractvec = refract(vEyeVec.xyz, normal, cRefractIndex);
+			vec3 refractvec = refract(vEyeVec.xyz, normal, -1.0 * cRefractIndex);
 			finalColor += cRefractColor * textureCube(sEnvCubeMap, refractvec).rgb;
 		#endif
         #ifdef LIGHTMAP
