@@ -20,7 +20,8 @@ namespace RenderCube.Droid
         protected override async void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-            var layout = new AbsoluteLayout(this);
+            var layout = new FrameLayout(this);
+            //var layout = new AbsoluteLayout(this);
             var surface = UrhoSurface.CreateSurface(this);
             layout.AddView(surface);
             SetContentView(layout);

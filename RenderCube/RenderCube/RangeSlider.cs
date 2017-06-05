@@ -33,7 +33,7 @@ namespace RenderCube
 
         Single minRange;
         Single maxRange;
-        public RangeSlider(string label, Single minRange, Single maxRange, int height = 30) : base()
+        public RangeSlider(string label, Single minRange, Single maxRange, int height = 25) : base()
         {
             this.minRange = minRange;
             this.maxRange = maxRange;
@@ -47,6 +47,7 @@ namespace RenderCube
             //set the label to adjust size depending on the length of the text
             Label.LayoutFlexScale = new Vector2(0, 0);
             Label.SetMinSize(0, 0);
+            Label.SetFixedWidth(10 * label.Length);
 
             Slider = new Slider();
             this.AddChild(Slider);

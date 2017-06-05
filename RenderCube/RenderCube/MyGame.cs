@@ -161,10 +161,9 @@ namespace RenderCube
             model2.SetMaterial(SphereMaterial);
 
             //Set up test material panel
-            MaterialPanel mp = new MaterialPanel(UI.Root,  SphereMaterial);
+            MaterialPanel mp = new MaterialPanel(UI.Root, SphereMaterial, ResourceCache);
             mp.Visible = true;
-            //mp.SetStyleAuto(null);
-            //UI.SubscribeToUIMouseClick(HandleControlClicked);
+
              
 
             //yes, we can change things up on the fly, giving the sphere 100% refract color, and no texture/cubemap
