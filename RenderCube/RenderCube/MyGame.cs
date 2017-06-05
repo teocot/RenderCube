@@ -148,7 +148,7 @@ namespace RenderCube
             //The box material is set up as 50% texture and 50% cubemap
             Material BoxMaterial = ResourceCache.GetMaterial("Materials/BoxMaterial.xml");
             StaticModel model1 = model1Node.CreateComponent<StaticModel>();
-            model1.Model = ResourceCache.GetModel("Models/Teapot.mdl");
+            model1.Model = ResourceCache.GetModel("Models/Sphere.mdl");
             model1.SetMaterial(BoxMaterial);
             //BoxMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(1.0f, 1.0f, 1.0f));
             //BoxMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -157,12 +157,9 @@ namespace RenderCube
             //The shere material is set up exactly the same as the box, 50/50.
             Material SphereMaterial = ResourceCache.GetMaterial("Materials/SphereMaterial.xml");
             StaticModel model2 = model2Node.CreateComponent<StaticModel>();
-            model2.Model = ResourceCache.GetModel("Models/Sphere.mdl");
+            model2.Model = ResourceCache.GetModel("Models/Teapot.mdl");
             model2.SetMaterial(SphereMaterial);
 
-            //Set up test material panel
-            MaterialPanel mp = new MaterialPanel(UI.Root, SphereMaterial, ResourceCache);
-            mp.Visible = true;
 
              
 
@@ -172,6 +169,10 @@ namespace RenderCube
             SphereMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(0.0f, 0.0f, 0.0f));
             SphereMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
+            //Set up test material panel
+            MaterialPanel mp = new MaterialPanel(UI.Root, SphereMaterial, ResourceCache);
+            mp.Visible = true;
+
             // Light
             Node lightNode = scene.CreateChild(name: "light");
             var light = lightNode.CreateComponent<Light>();
@@ -179,7 +180,7 @@ namespace RenderCube
             light.Brightness = 0.9f;
             lightNode.Position = new Vector3(x: 5, y: 5, z: 8);
 
-
+            
             //skybox
             var skyNode = scene.CreateChild("Sky");
             skyNode.SetScale(500.0f); // The scale actually does not matter
