@@ -28,7 +28,7 @@ namespace RenderCube
         public Action<RangeSliderEventArgs> SliderChanged = (args => { });
 
         //map the Slider range [0.0,1.0] to the custom range [minRange, maxRange] 
-        public float Value { get { return (Slider.Value * (maxRange - minRange)) + minRange; }
+        public Single Value { get { return (Slider.Value * (maxRange - minRange)) + minRange; }
                              set { Slider.Value = ((value - minRange) / (maxRange - minRange)); } }
 
         Single minRange;

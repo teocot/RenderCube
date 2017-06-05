@@ -47,8 +47,7 @@ namespace RenderCube
 
         UrhoConsole console;
         DebugHud debugHud;
-        Sprite logoSprite;
-        UI ui;
+
         Dictionary<String, String> materials = new Dictionary<String, String>
         {
             {"SphereMaterial", "Materials/SphereMaterial.xml" },
@@ -155,22 +154,23 @@ namespace RenderCube
 
 
             //The shere material is set up exactly the same as the box, 50/50.
-            Material SphereMaterial = ResourceCache.GetMaterial("Materials/SphereMaterial.xml");
+            Material TeapotMaterial = ResourceCache.GetMaterial("Materials/TeapotMaterial.xml");
             StaticModel model2 = model2Node.CreateComponent<StaticModel>();
             model2.Model = ResourceCache.GetModel("Models/Teapot.mdl");
-            model2.SetMaterial(SphereMaterial);
+            model2.SetMaterial(TeapotMaterial);
 
-
+            //MaterialHelper TeapotHelper = new MaterialHelper(TeapotMaterial);
              
 
             //yes, we can change things up on the fly, giving the sphere 100% refract color, and no texture/cubemap
-            SphereMaterial.SetShaderParameter("RefractIndex", 0.66f);
-            SphereMaterial.SetShaderParameter("RefractColor", new Vector3(1.0f, 1.0f, 1.0f));
-            SphereMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(0.0f, 0.0f, 0.0f));
-            SphereMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+            //TeapotHelper.RefractIndex = 0.66f;
+            //TeapotHelper.MatRefractColor = new Vector3(1.0f, 1.0f, 1.0f);
+            //TeapotMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(0.0f, 0.0f, 0.0f));
+            //TeapotMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+
 
             //Set up test material panel
-            MaterialPanel mp = new MaterialPanel(UI.Root, SphereMaterial, ResourceCache);
+            MaterialPanel mp = new MaterialPanel(UI.Root, TeapotMaterial, ResourceCache);
             mp.Visible = true;
 
             // Light

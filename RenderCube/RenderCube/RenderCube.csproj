@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MaterialHelper.cs" />
     <Compile Include="MaterialPanel.cs" />
     <Compile Include="LookSphereNode.cs" />
     <Compile Include="JoystickLayoutPatches.cs" />

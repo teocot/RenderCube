@@ -5,6 +5,6 @@
   <parameter name="MatDiffColor" value="0.5 0.5 0.5 1 " />
   <parameter name="MatSpecColor" value="0 0 0 1" />
   <parameter name="MatEnvMapColor" value="0.5 0.5 0.5" />
-  <parameter name="RefractColor" value ="0.0 0.0 0.0" />
+  <parameter name="MatRefractColor" value ="0.0 0.0 0.0" />
   <parameter name="RefractIndex" value ="0.66" />
 </material>
