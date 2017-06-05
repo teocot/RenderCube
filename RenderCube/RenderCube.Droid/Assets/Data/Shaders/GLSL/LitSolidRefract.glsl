@@ -51,7 +51,7 @@ varying vec4 vWorldPos;
 	//uniforms for frensel fragment shader
 	#ifdef COMPILEPS
 		uniform float cRefractIndex;
-		uniform vec3 cRefractColor;
+		uniform vec3 cMatRefractColor;
 	#endif
 
 	//this is from the glsl 1.1 specification
@@ -227,7 +227,7 @@ void PS()
         #endif
 		#ifdef REFRACT
 			vec3 refractvec = refract(vEyeVec.xyz, normal, cRefractIndex);
-			finalColor += cRefractColor * textureCube(sEnvCubeMap, refractvec).rgb;
+			finalColor += cMatRefractColor * textureCube(sEnvCubeMap, refractvec).rgb;
 		#endif
         #ifdef LIGHTMAP
             finalColor += texture2D(sEmissiveMap, vTexCoord2).rgb * diffColor.rgb;
@@ -264,7 +264,7 @@ void PS()
         #endif
 		#ifdef REFRACT
 			vec3 refractvec = refract(vEyeVec.xyz, normal, -1.0 * cRefractIndex);
-			finalColor += cRefractColor * textureCube(sEnvCubeMap, refractvec).rgb;
+			finalColor += cMatRefractColor * textureCube(sEnvCubeMap, refractvec).rgb;
 		#endif
         #ifdef LIGHTMAP
             finalColor += texture2D(sEmissiveMap, vTexCoord2).rgb * diffColor.rgb;

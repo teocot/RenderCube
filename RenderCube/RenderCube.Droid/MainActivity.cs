@@ -12,7 +12,7 @@ namespace RenderCube.Droid
     [Activity(Label = "RenderCube.Droid", MainLauncher = true,
         Icon = "@drawable/icon", Theme = "@android:style/Theme.NoTitleBar.Fullscreen",
         ConfigurationChanges = ConfigChanges.KeyboardHidden | ConfigChanges.Orientation,
-        ScreenOrientation = ScreenOrientation.Landscape)]
+        ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : Activity
     {
         MyGame myGame;

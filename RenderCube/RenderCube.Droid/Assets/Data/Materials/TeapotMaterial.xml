@@ -1,9 +1,9 @@
 <material>
   <technique name="Techniques/DiffEnvCubeRefract.xml" quality="0" />
+	<texture name="Textures/ash_uvgrid01.jpg" unit="diffuse"/>
   <texture unit="environment" name="Textures/Skybox3.xml" />
-  <texture unit="diffuse" name ="Textures/xamarin.png" />
-  <parameter name="MatDiffColor" value="0.5 0.5 0.5 1 " />
-  <parameter name="MatSpecColor" value="0 0 0 1" />
+	<parameter name="MatDiffColor" value="0.64 0.64 0.64 1"/>
+	<parameter name="MatSpecColor" value="0.5 0.5 0.5 50"/>
   <parameter name="MatEnvMapColor" value="0.5 0.5 0.5" />
   <parameter name="MatRefractColor" value ="0.0 0.0 0.0" />
   <parameter name="RefractIndex" value ="0.66" />
