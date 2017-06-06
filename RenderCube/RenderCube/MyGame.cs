@@ -154,10 +154,11 @@ namespace RenderCube
 
 
             //The shere material is set up exactly the same as the box, 50/50.
+            MaterialHelper test = new MaterialHelper(ResourceCache.GetXmlFile("Materials/TeapotMaterial.xml"));
             Material TeapotMaterial = ResourceCache.GetMaterial("Materials/TeapotMaterial.xml");
             StaticModel model2 = model2Node.CreateComponent<StaticModel>();
             model2.Model = ResourceCache.GetModel("Models/Teapot.mdl");
-            model2.SetMaterial(TeapotMaterial);
+            model2.SetMaterial(test);
 
             //MaterialHelper TeapotHelper = new MaterialHelper(TeapotMaterial);
              
@@ -170,7 +171,7 @@ namespace RenderCube
 
 
             //Set up test material panel
-            MaterialPanel mp = new MaterialPanel(UI.Root, TeapotMaterial, ResourceCache);
+            MaterialPanel mp = new MaterialPanel(UI.Root, test, ResourceCache);
             mp.Visible = true;
 
             // Light
@@ -460,62 +461,62 @@ namespace RenderCube
             var renderer = Renderer;
             switch (e.Key)
             {
-                case Key.N1:
-                    var quality = renderer.TextureQuality;
-                    ++quality;
-                    if (quality > 2)
-                        quality = 0;
-                    renderer.TextureQuality = quality;
-                    break;
+            //    case Key.N1:
+            //        var quality = renderer.TextureQuality;
+            //        ++quality;
+            //        if (quality > 2)
+            //            quality = 0;
+            //        renderer.TextureQuality = quality;
+            //        break;
 
-                case Key.N2:
-                    var mquality = renderer.MaterialQuality;
-                    ++mquality;
-                    if (mquality > 2)
-                        mquality = 0;
-                    renderer.MaterialQuality = mquality;
-                    break;
+            //    case Key.N2:
+            //        var mquality = renderer.MaterialQuality;
+            //        ++mquality;
+            //        if (mquality > 2)
+            //            mquality = 0;
+            //        renderer.MaterialQuality = mquality;
+            //        break;
 
-                case Key.N3:
-                    renderer.SpecularLighting = !renderer.SpecularLighting;
-                    break;
+            //    case Key.N3:
+            //        renderer.SpecularLighting = !renderer.SpecularLighting;
+            //        break;
 
-                case Key.N4:
-                    renderer.DrawShadows = !renderer.DrawShadows;
-                    break;
+            //    case Key.N4:
+            //        renderer.DrawShadows = !renderer.DrawShadows;
+            //        break;
 
-                case Key.N5:
-                    var shadowMapSize = renderer.ShadowMapSize;
-                    shadowMapSize *= 2;
-                    if (shadowMapSize > 2048)
-                        shadowMapSize = 512;
-                    renderer.ShadowMapSize = shadowMapSize;
-                    break;
+            //    case Key.N5:
+            //        var shadowMapSize = renderer.ShadowMapSize;
+            //        shadowMapSize *= 2;
+            //        if (shadowMapSize > 2048)
+            //            shadowMapSize = 512;
+            //        renderer.ShadowMapSize = shadowMapSize;
+            //        break;
 
-                // shadow depth and filtering quality
-                case Key.N6:
-                    var q = (int)renderer.ShadowQuality++;
-                    if (q > 3)
-                        q = 0;
-                    renderer.ShadowQuality = (ShadowQuality)q;
-                    break;
+            //    // shadow depth and filtering quality
+            //    case Key.N6:
+            //        var q = (int)renderer.ShadowQuality++;
+            //        if (q > 3)
+            //            q = 0;
+            //        renderer.ShadowQuality = (ShadowQuality)q;
+            //        break;
 
-                // occlusion culling
-                case Key.N7:
-                    var o = !(renderer.MaxOccluderTriangles > 0);
-                    renderer.MaxOccluderTriangles = o ? 5000 : 0;
-                    break;
+            //    // occlusion culling
+            //    case Key.N7:
+            //        var o = !(renderer.MaxOccluderTriangles > 0);
+            //        renderer.MaxOccluderTriangles = o ? 5000 : 0;
+            //        break;
 
-                // instancing
-                case Key.N8:
-                    renderer.DynamicInstancing = !renderer.DynamicInstancing;
-                    break;
+            //    // instancing
+            //    case Key.N8:
+            //        renderer.DynamicInstancing = !renderer.DynamicInstancing;
+            //        break;
 
-                case Key.N9:
-                    Image screenshot = new Image();
-                    Graphics.TakeScreenShot(screenshot);
-                    screenshot.SavePNG(FileSystem.ProgramDir + $"Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
-                    break;
+            //    case Key.N9:
+            //        Image screenshot = new Image();
+            //        Graphics.TakeScreenShot(screenshot);
+            //        screenshot.SavePNG(FileSystem.ProgramDir + $"Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
+            //        break;
             }
         }
 

@@ -9,32 +9,32 @@ using Urho.Resources;
 namespace RenderCube
 {
 
-    class MaterialHelper 
+    class MaterialHelper : Material
     {
-        public Material material;
+
 
         private Vector4 _MatDiffColor;
         public Vector4 MatDiffColor {
             get { return this._MatDiffColor; }
-            set { material.SetShaderParameter("MatDiffColor", value); _MatDiffColor = value; SetParameters["MatDiffuseColor"] = true; }
+            set { this.SetShaderParameter("MatDiffColor", value); _MatDiffColor = value; SetParameters["MatDiffuseColor"] = true; }
         }
         private Vector3 _MatEnvMapColor;
         public Vector3 MatEnvMapColor
         {
             get { return this._MatEnvMapColor; }
-            set { material.SetShaderParameter("MatEnvMapColor", value); _MatEnvMapColor = value; SetParameters["MatEnvMapColor"] = true; }
+            set { this.SetShaderParameter("MatEnvMapColor", value); _MatEnvMapColor = value; SetParameters["MatEnvMapColor"] = true; }
         }
         private Vector3 _MatRefractColor;
         public Vector3 MatRefractColor
         {
             get { return this._MatRefractColor; }
-            set { material.SetShaderParameter("MatRefractColor", value); _MatRefractColor = value; SetParameters["MatRefractColor"] = true; }
+            set { this.SetShaderParameter("MatRefractColor", value); _MatRefractColor = value; SetParameters["MatRefractColor"] = true; }
         }
         private Single _RefractIndex;
         public Single RefractIndex
         {
             get { return this._RefractIndex; }
-            set { material.SetShaderParameter("RefractIndex", value); _RefractIndex = value; SetParameters["RefractIndex"] = true; }
+            set { this.SetShaderParameter("RefractIndex", value); _RefractIndex = value; SetParameters["RefractIndex"] = true; }
         }
 
         Dictionary<string, bool> SetParameters = new Dictionary<string, bool>{
@@ -49,16 +49,11 @@ namespace RenderCube
 
         public static readonly Vector3 Vector3NaN = new Vector3(Single.NaN, Single.NaN, Single.NaN);
 
-        public MaterialHelper(Material m) 
+        
+
+        public MaterialHelper(XmlFile file)
         {
-
-            this.material = m;
-
-            this.RefractIndex = 0.666f;
-            //this.MatRefractColor = new Vector3(0.5f, 0.5f, 0.5f);
-            //this.MatEnvMapColor = new Vector3(0.5f, 0.5f, 0.5f);
-            //this.MatDiffColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
-            
+            this.Load(file.GetRoot("material"));
         }
 
         public bool isSet(string key)

@@ -17,24 +17,25 @@ namespace RenderCube
 
         MaterialHelper material;
         ResourceCache ResourceCache;
-        public MaterialPanel(UIElement parent, Material m, ResourceCache r) : base()
-        {
+        //public MaterialPanel(UIElement parent, Material m, ResourceCache r) : base()
+        //{
            
-            this.material = new MaterialHelper(m);
+        //    this.material = new MaterialHelper(m);
             
-            this.material.SetAll();
-            this.ResourceCache = r;
-            parent.AddChild(this);
+        //    this.material.SetAll();
+        //    this.ResourceCache = r;
+        //    parent.AddChild(this);
             
-            this.SetupPanel();
+        //    this.SetupPanel();
             
 
-        }
+        //}
         public MaterialPanel(UIElement parent, MaterialHelper m, ResourceCache r) : base()
         {
             this.material = m;
             this.ResourceCache = r;
             parent.AddChild(this);
+            this.material.SetAll();
             this.SetupPanel();
         }
         public void SetupPanel()

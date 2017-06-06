@@ -9,7 +9,8 @@ using Urho.Resources;
 
 namespace RenderCube
 {
-    public struct RangeSliderEventArgs {
+    public struct RangeSliderEventArgs
+    {
         public RangeSliderEventArgs(UIElement e, Single v)
         {
             this.Element = e;
@@ -24,15 +25,22 @@ namespace RenderCube
     {
         public Text Label;
         public Slider Slider;
-        public Text DisplayText;
+        public LineEdit ValueEditor;
         public Action<RangeSliderEventArgs> SliderChanged = (args => { });
 
         //map the Slider range [0.0,1.0] to the custom range [minRange, maxRange] 
-        public Single Value { get { return (Slider.Value * (maxRange - minRange)) + minRange; }
-                             set { Slider.Value = ((value - minRange) / (maxRange - minRange)); } }
+        public Single Value
+        {
+            get { return (Slider.Value * (maxRange - minRange)) + minRange; }
+            set { Slider.Value = ((value - minRange) / (maxRange - minRange)); }
+        }
 
         Single minRange;
         Single maxRange;
+        public Single Clamp(Single value)
+        {
+            return MathHelper.Clamp(value, this.minRange, this.maxRange);
+        }
         public RangeSlider(string label, Single minRange, Single maxRange, int height = 25) : base()
         {
             this.minRange = minRange;
@@ -55,20 +63,35 @@ namespace RenderCube
             //slider will respect height, but stretch horizontally
             Slider.SetMaxSize(100000, height);
 
-            DisplayText = new Text();
-            this.AddChild(DisplayText);
-            DisplayText.SetMaxSize(80, 20);
+            ValueEditor = new LineEdit();
+            this.AddChild(ValueEditor);
+            ValueEditor.SetMaxSize(100, 20);
+            ValueEditor.SetFixedWidth(10 * 10);
             //when the slider changes, set the value display and call the action function;
-            Slider.SliderChanged += (args => {
-                DisplayText.Value = this.Value.ToString();
-                var newargs = new RangeSliderEventArgs(args.Element,this.Value);
+            Slider.SliderChanged += (args =>
+            {
+                ValueEditor.Text = " "+this.Value.ToString();
+                var newargs = new RangeSliderEventArgs(args.Element, this.Value);
                 this.SliderChanged(newargs);
-                });
+            });
 
+            ValueEditor.TextFinished += (args =>
+            {
+                Single value;
+                if (Single.TryParse(args.Text, out value))
+                {
+
+                        this.Value = this.Clamp(value);
+                        //ValueEditor.Text = Slider.Value.ToString();
+                    
+                    //ValueEditor.Text = value.ToString();
+                }
+                //ValueEditor.Text = Slider.Value.ToString();
+            });
             this.SetStyleAuto(null);
             Label.SetStyleAuto(null);
             Slider.SetStyleAuto(null);
-            DisplayText.SetStyleAuto(null);
+            ValueEditor.SetStyleAuto(null);
         }
     }
 }
