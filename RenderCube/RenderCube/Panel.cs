@@ -17,7 +17,7 @@ namespace RenderCube
         }
         protected RangeSlider CreateSlider( string label, Single minRange = 0.0f, Single maxRange = 1.0f )
         {
-            RangeSlider slider = new RangeSlider(label, minRange, maxRange);
+            RangeSlider slider = new RangeSlider(label, minRange, maxRange, 30);
             this.AddChild(slider);
 
             return slider;

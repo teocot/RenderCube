@@ -65,7 +65,7 @@ namespace RenderCube
 
             ValueEditor = new LineEdit();
             this.AddChild(ValueEditor);
-            ValueEditor.SetMaxSize(100, 20);
+            ValueEditor.SetMaxSize(100, height);
             ValueEditor.SetFixedWidth(10 * 10);
             //when the slider changes, set the value display and call the action function;
             Slider.SliderChanged += (args =>

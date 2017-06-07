@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 //
 
-//Stage 1 Created by thinkyfish at freelancer for teodor5
+//Stage 2 Created by thinkyfish at freelancer for teodor5
 
 
 using System;
@@ -40,6 +40,7 @@ using Urho.Resources;
 
 namespace RenderCube
 {
+    public enum PanelMode { Material, Model };
     public class MyGame : Application
     {
 
@@ -47,13 +48,15 @@ namespace RenderCube
 
         UrhoConsole console;
         DebugHud debugHud;
-
-        Dictionary<String, String> materials = new Dictionary<String, String>
-        {
-            {"SphereMaterial", "Materials/SphereMaterial.xml" },
-            {"BoxMaterial", "Materials/BoxMaterial.xml" },
-            {"TeapotMaterial", "Materials/TeapotMaterial.xml" }
-        };
+        PanelMode panelMode;
+        string currentModel;
+        Panel currentPanel;
+        MaterialPanel materialpanel;
+        ModelPanel modelpanel;
+        Dictionary<string, XmlFile> materialxml;
+        Dictionary<string, Model> models;
+        Dictionary<string, Node> nodes = new Dictionary<string, Node>();
+        Dictionary<string, MaterialHelper> materials = new Dictionary<string, MaterialHelper>();
 
         protected const float TouchSensitivity = 2;
         protected float Yaw { get; set; }
@@ -80,7 +83,22 @@ namespace RenderCube
             // Set style to the UI root so that elements will inherit it
             UI.Root.SetDefaultStyle(ResourceCache.GetXmlFile("UI/DefaultStyle.xml"));
 
-            
+            materialxml = new Dictionary<string, XmlFile>
+            {
+                {"Default", ResourceCache.GetXmlFile("Materials/SphereMaterial.xml")},
+               // {"BoxMaterial",  new MaterialHelper(ResourceCache.GetXmlFile("Materials/BoxMaterial.xml")) },
+               // {"TeapotMaterial",  new MaterialHelper(ResourceCache.GetXmlFile("Materials/TeapotMaterial.xml")) }
+            };
+
+            models = new Dictionary<string, Model>
+            {
+                {"Sphere", ResourceCache.GetModel("Models/Sphere.mdl")},
+                {"Box", ResourceCache.GetModel("Models/Box.mdl") },
+                {"Suzanne", ResourceCache.GetModel("Models/Suzanne.mdl") },
+                {"Teapot", ResourceCache.GetModel("Models/Teapot.mdl") },
+            };
+
+
             Log.LogMessage += e => Debug.WriteLine($"[{e.Level}] {e.Message}");
             TouchEnabled = true;
             if (Platform == Platforms.Android ||
@@ -111,7 +129,7 @@ namespace RenderCube
         }
 
         //this tells the game engine to use the joystick and zoom in (only on android and IOS)
-        protected string JoystickLayoutPatch => JoystickLayoutPatches.WithZoomInAndOut;
+        protected string JoystickLayoutPatch => JoystickLayoutPatches.WithZoomInAndOutWithoutArrows;
 
         protected override void OnUpdate(float timeStep)
         {
@@ -121,6 +139,30 @@ namespace RenderCube
 
             SimpleMoveCamera2D(timeStep);
 
+        }
+
+        public void SetPanelMode(PanelMode mode)
+        {
+            switch (mode)
+            {
+                case PanelMode.Material:
+                    if (currentPanel != null)
+                    {
+                        currentPanel.Visible = false;
+                        currentPanel = null;
+                    }
+                    materialpanel = new MaterialPanel(UI.Root, materials[currentModel], ResourceCache);
+                    materialpanel.Visible = true;
+                    if (Platform == Platforms.Android)
+                    {
+                        materialpanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
+                    }
+                    currentPanel = materialpanel;
+                    break;
+                case PanelMode.Model:
+                    break;
+                
+            }
         }
 
 
@@ -133,46 +175,33 @@ namespace RenderCube
 
 
             //Button b = CreateButton(10, 10, 100, 100, "test");
-            // Box	
-            Node model1Node = scene.CreateChild(name: "Box node");
-            model1Node.Position = new Vector3(x: 0, y: 0, z: 0.8f);
-            model1Node.SetScale(1f);
-            model1Node.Rotation = new Quaternion(x: 0, y: 90, z: 0);
+            // Box
 
-            Node model2Node = scene.CreateChild(name: "Sphere node");
-            model2Node.Position = new Vector3(x: 0, y: 0, z: -0.8f);
-            model2Node.SetScale(1f);
-            model2Node.Rotation = new Quaternion(x: 0, y: 0, z: 0);
+            Node modelnode = scene.CreateChild(name: "User Node");
+            modelnode.Position = new Vector3(x: 0, y: 0, z: 0f);
+            modelnode.SetScale(1f);
+            modelnode.Rotation = new Quaternion(x: 0, y: 0, z: 0);
 
+            currentModel = "UserModel1";
             //The box material is set up as 50% texture and 50% cubemap
-            Material BoxMaterial = ResourceCache.GetMaterial("Materials/BoxMaterial.xml");
-            StaticModel model1 = model1Node.CreateComponent<StaticModel>();
-            model1.Model = ResourceCache.GetModel("Models/Sphere.mdl");
-            model1.SetMaterial(BoxMaterial);
+            nodes.Add(currentModel, modelnode);
+
+            StaticModel model1 = modelnode.CreateComponent<StaticModel>();
+            model1.Model = models["Suzanne"];
+
+            MaterialHelper material1 = new MaterialHelper(materialxml["Default"]);
+            materials.Add(currentModel, material1);
+
+            model1.SetMaterial(material1);
+
+            SetPanelMode(PanelMode.Material);
             //BoxMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(1.0f, 1.0f, 1.0f));
             //BoxMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
-
-            //The shere material is set up exactly the same as the box, 50/50.
-            MaterialHelper test = new MaterialHelper(ResourceCache.GetXmlFile("Materials/TeapotMaterial.xml"));
-            Material TeapotMaterial = ResourceCache.GetMaterial("Materials/TeapotMaterial.xml");
-            StaticModel model2 = model2Node.CreateComponent<StaticModel>();
-            model2.Model = ResourceCache.GetModel("Models/Teapot.mdl");
-            model2.SetMaterial(test);
-
-            //MaterialHelper TeapotHelper = new MaterialHelper(TeapotMaterial);
-             
-
-            //yes, we can change things up on the fly, giving the sphere 100% refract color, and no texture/cubemap
-            //TeapotHelper.RefractIndex = 0.66f;
-            //TeapotHelper.MatRefractColor = new Vector3(1.0f, 1.0f, 1.0f);
-            //TeapotMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(0.0f, 0.0f, 0.0f));
-            //TeapotMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
-
-
             //Set up test material panel
-            MaterialPanel mp = new MaterialPanel(UI.Root, test, ResourceCache);
-            mp.Visible = true;
+
+
+
 
             // Light
             Node lightNode = scene.CreateChild(name: "light");

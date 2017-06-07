@@ -36,7 +36,17 @@ namespace RenderCube
             this.ResourceCache = r;
             parent.AddChild(this);
             this.material.SetAll();
+            this.Name = "MaterialPanel";
             this.SetupPanel();
+        }
+        public void SetMaterial(MaterialHelper m)
+        {
+            this.material = m;
+
+            this.material.SetAll(); //this will eventually use the xml parser;
+            this.RemoveAllChildren();
+            this.SetupPanel();
+
         }
         public void SetupPanel()
         {
@@ -46,7 +56,7 @@ namespace RenderCube
             this.SetMinSize(this.Parent.Size.X, 100);
             this.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
             this.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Bottom);
-            this.Name = "MaterialPanel";
+            
 
             if (material.isSet("RefractIndex"))
             {
