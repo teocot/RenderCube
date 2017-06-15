@@ -49,14 +49,14 @@ namespace RenderCube
         UrhoConsole console;
         DebugHud debugHud;
         PanelMode panelMode;
-        string currentModel;
+        string currentModel; //this is the key that tells us which model is currently selected
         Panel currentPanel;
         MaterialPanel materialpanel;
         ModelPanel modelpanel;
         Dictionary<string, XmlFile> materialxml;
         Dictionary<string, Model> models;
-        Dictionary<string, Node> nodes = new Dictionary<string, Node>();
-        Dictionary<string, MaterialHelper> materials = new Dictionary<string, MaterialHelper>();
+        Dictionary<string, Node> userNodes = new Dictionary<string, Node>();
+        Dictionary<string, MaterialHelper> userMaterials = new Dictionary<string, MaterialHelper>();
 
         protected const float TouchSensitivity = 2;
         protected float Yaw { get; set; }
@@ -85,7 +85,7 @@ namespace RenderCube
 
             materialxml = new Dictionary<string, XmlFile>
             {
-                {"Default", ResourceCache.GetXmlFile("Materials/SphereMaterial.xml")},
+                {"Default", ResourceCache.GetXmlFile("Materials/DefaultMaterial.xml")},
                // {"BoxMaterial",  new MaterialHelper(ResourceCache.GetXmlFile("Materials/BoxMaterial.xml")) },
                // {"TeapotMaterial",  new MaterialHelper(ResourceCache.GetXmlFile("Materials/TeapotMaterial.xml")) }
             };
@@ -151,20 +151,37 @@ namespace RenderCube
                         currentPanel.Visible = false;
                         currentPanel = null;
                     }
-                    materialpanel = new MaterialPanel(UI.Root, materials[currentModel], ResourceCache);
+                    materialpanel = new MaterialPanel(UI.Root, userMaterials[currentModel], ResourceCache);
                     materialpanel.Visible = true;
                     if (Platform == Platforms.Android)
                     {
                         materialpanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
                     }
+                    materialpanel.OnPrevious += (args=> PreviousPanelMode());
                     currentPanel = materialpanel;
                     break;
                 case PanelMode.Model:
+                    break;
+                default:
+                    this.panelMode = mode;
                     break;
                 
             }
         }
 
+        public void PreviousPanelMode()
+        {
+            switch (this.panelMode)
+            {
+                case (PanelMode.Material):
+                    this.SetPanelMode(PanelMode.Model);
+
+                    break;
+                case (PanelMode.Model):
+                    this.SetPanelMode(PanelMode.Material);
+                    break;
+            }
+        }
 
         void CreateScene()
         {
@@ -184,16 +201,17 @@ namespace RenderCube
 
             currentModel = "UserModel1";
             //The box material is set up as 50% texture and 50% cubemap
-            nodes.Add(currentModel, modelnode);
+            userNodes.Add(currentModel, modelnode);
 
             StaticModel model1 = modelnode.CreateComponent<StaticModel>();
             model1.Model = models["Suzanne"];
 
             MaterialHelper material1 = new MaterialHelper(materialxml["Default"]);
-            materials.Add(currentModel, material1);
+            userMaterials.Add(currentModel, material1);
 
             model1.SetMaterial(material1);
 
+            
             SetPanelMode(PanelMode.Material);
             //BoxMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(1.0f, 1.0f, 1.0f));
             //BoxMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));

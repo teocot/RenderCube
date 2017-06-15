@@ -88,6 +88,7 @@ namespace RenderCube
                 }
                 //ValueEditor.Text = Slider.Value.ToString();
             });
+            //ValueEditor.Focused += (args => ValueEditor.Selected=true);
             this.SetStyleAuto(null);
             Label.SetStyleAuto(null);
             Slider.SetStyleAuto(null);
