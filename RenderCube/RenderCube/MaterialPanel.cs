@@ -14,9 +14,9 @@ namespace RenderCube
         RangeSlider DiffSlider;
         RangeSlider EnvSlider;
         RangeSlider RefractSlider;
-
+        ControlBar ControlBar;
         MaterialHelper material;
-        public Action<ReleasedEventArgs> OnPrevious;
+        public Action<ReleasedEventArgs> OnPrevious { set { ControlBar.OnPrevious = value; } }
         ResourceCache ResourceCache;
         //public MaterialPanel(UIElement parent, Material m, ResourceCache r) : base()
         //{
@@ -57,11 +57,11 @@ namespace RenderCube
             this.SetMinSize(this.Parent.Size.X, 100);
             this.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
             this.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Bottom);
-            ControlBar cb = new ControlBar("Material Properties");
-            cb.OnPrevious += this.OnPrevious;
+            this.ControlBar = new ControlBar("Material Properties");
+            
 
-            this.AddChild(cb);
-            cb.SetStyleAuto(null);
+            this.AddChild(this.ControlBar);
+            this.ControlBar.SetStyleAuto(null);
             if (material.isSet("RefractIndex"))
             {
                 IORSlider = this.CreateSlider("Ior Ratio", 0.0f, 1.0f);

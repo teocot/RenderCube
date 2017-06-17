@@ -20,7 +20,7 @@ namespace RenderCube
 
             
             
-            prevButton.Released += this.OnPrevious;
+            
             prevButton.SetFixedSize(24, 24);
             this.AddChild(prevButton);
 
@@ -35,7 +35,7 @@ namespace RenderCube
             //prevButton.SetStyle("LeftButton", null);
         }
         public Action OnNext;
-        public Action<ReleasedEventArgs> OnPrevious;
+        public Action<ReleasedEventArgs> OnPrevious { set { prevButton.Released += value; } }
         //public new bool SetStyleAuto(Urho.Resources.XmlFile file)
         //{
         //    bool ret = base.SetStyleAuto(file);

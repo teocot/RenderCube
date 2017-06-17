@@ -157,11 +157,19 @@ namespace RenderCube
                     {
                         materialpanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
                     }
-                    materialpanel.OnPrevious += (args=> PreviousPanelMode());
+                    materialpanel.OnPrevious = (args => this.PreviousPanelMode());
                     currentPanel = materialpanel;
+                    this.panelMode = mode;
                     break;
                 case PanelMode.Model:
+                    if (currentPanel != null)
+                    {
+                        currentPanel.Visible = false;
+                        currentPanel = null;
+                    }
+                    this.panelMode = mode;
                     break;
+                    
                 default:
                     this.panelMode = mode;
                     break;
@@ -501,6 +509,10 @@ namespace RenderCube
                     debugHud.ToggleAll();
                     return;
                 case Key.Up:
+                    PreviousPanelMode();
+                    return;
+                case Key.Down:
+                    SetPanelMode(PanelMode.Model);
                     return;
               
             }
