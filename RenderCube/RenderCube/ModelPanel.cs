@@ -13,6 +13,8 @@ namespace RenderCube
 
 
         Node Node;
+        ControlBar ControlBar;
+        public Action<ReleasedEventArgs> OnPrevious { set { ControlBar.OnPrevious = value; } }
         ResourceCache ResourceCache;
         //public MaterialPanel(UIElement parent, Material m, ResourceCache r) : base()
         //{
@@ -39,7 +41,9 @@ namespace RenderCube
         {
 
             this.SetStyleAuto(null);
-
+            this.ControlBar = new ControlBar("Model Properties");
+            this.AddChild(this.ControlBar);
+            this.ControlBar.SetStyleAuto(null);
             this.SetMinSize(this.Parent.Size.X, 100);
             this.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
             this.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Bottom);

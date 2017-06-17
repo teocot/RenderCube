@@ -167,6 +167,9 @@ namespace RenderCube
                         currentPanel.Visible = false;
                         currentPanel = null;
                     }
+                    modelpanel = new ModelPanel(UI.Root, scene, ResourceCache);
+                    modelpanel.OnPrevious = (args => this.PreviousPanelMode());
+                    currentPanel = this.modelpanel;
                     this.panelMode = mode;
                     break;
                     
