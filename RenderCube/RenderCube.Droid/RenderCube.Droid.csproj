@@ -101,19 +101,10 @@
     <AndroidAsset Include="Assets\Data\Fonts\OFL.txt" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Materials\BoxMaterial.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Materials\Skybox.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidAsset Include="Assets\Data\Materials\Skybox2.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Data\Materials\Skybox3.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Materials\SphereMaterial.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Data\Techniques\DiffEnvCubeRefract.xml" />
@@ -290,14 +281,12 @@
     <AndroidAsset Include="Assets\Data\UI\UILoadExample.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Materials\TeapotMaterial.xml">
+    <AndroidAsset Include="Assets\Data\Textures\ash_uvgrid01.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AndroidAsset>
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Data\Textures\ash_uvgrid01.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </AndroidAsset>
+    <AndroidAsset Include="Assets\Data\Materials\DefaultMaterial.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\..\packages\UrhoSharp.1.4.18\build\MonoAndroid\UrhoSharp.targets" Condition="Exists('..\..\packages\UrhoSharp.1.4.18\build\MonoAndroid\UrhoSharp.targets')" />

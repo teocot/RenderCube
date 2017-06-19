@@ -16,25 +16,13 @@ namespace RenderCube
         ControlBar ControlBar;
         public Action<ReleasedEventArgs> OnPrevious { set { ControlBar.OnPrevious = value; } }
         ResourceCache ResourceCache;
-        //public MaterialPanel(UIElement parent, Material m, ResourceCache r) : base()
-        //{
 
-        //    this.material = new MaterialHelper(m);
-
-        //    this.material.SetAll();
-        //    this.ResourceCache = r;
-        //    parent.AddChild(this);
-
-        //    this.SetupPanel();
-
-
-        //}
         public ModelPanel(UIElement parent, Node n, ResourceCache r) : base()
         {
 
             this.ResourceCache = r;
             parent.AddChild(this);
-
+            this.Node = n;
             this.SetupPanel();
         }
         public void SetupPanel()

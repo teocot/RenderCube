@@ -129,7 +129,7 @@ namespace RenderCube
         }
 
         //this tells the game engine to use the joystick and zoom in (only on android and IOS)
-        protected string JoystickLayoutPatch => JoystickLayoutPatches.WithZoomInAndOutWithoutArrows;
+        protected string JoystickLayoutPatch => JoystickLayoutPatches.Hidden;
 
         protected override void OnUpdate(float timeStep)
         {
@@ -169,6 +169,10 @@ namespace RenderCube
                     }
                     modelpanel = new ModelPanel(UI.Root, scene, ResourceCache);
                     modelpanel.OnPrevious = (args => this.PreviousPanelMode());
+                    if (Platform == Platforms.Android)
+                    {
+                        modelpanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
+                    }
                     currentPanel = this.modelpanel;
                     this.panelMode = mode;
                     break;

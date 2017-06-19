@@ -17,9 +17,6 @@ namespace RenderCube
             this.SetMinSize(0, 24);
             this.VerticalAlignment = VerticalAlignment.Top;
             this.LayoutMode = LayoutMode.Horizontal;
-
-            
-            
             
             prevButton.SetFixedSize(24, 24);
             this.AddChild(prevButton);
