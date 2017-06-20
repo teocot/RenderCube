@@ -12,17 +12,20 @@ namespace RenderCube
     {
 
 
-        Node Node;
+        Node SceneNode;
         ControlBar ControlBar;
         public Action<ReleasedEventArgs> OnPrevious { set { ControlBar.OnPrevious = value; } }
         ResourceCache ResourceCache;
+        ListView ModelListView;
+        Dictionary<string, Model> models;
 
-        public ModelPanel(UIElement parent, Node n, ResourceCache r) : base()
+        public ModelPanel(UIElement parent, Node scene, ResourceCache r, Dictionary<string,Model> models = null) : base()
         {
 
             this.ResourceCache = r;
             parent.AddChild(this);
-            this.Node = n;
+            this.SceneNode = scene;
+            this.models = models;
             this.SetupPanel();
         }
         public void SetupPanel()
@@ -35,7 +38,26 @@ namespace RenderCube
             this.SetMinSize(this.Parent.Size.X, 100);
             this.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
             this.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Bottom);
+            this.ModelListView = new ListView();
+            this.RefreshList();
+            ModelListView.SetStyleAuto(null);
+            this.AddChild(ModelListView);
+
             this.Name = "ModelPanel";
+        }
+        public void RefreshList()
+        {
+            //ModelListView.RemoveAllChildren();
+            foreach (Node node in SceneNode.Children)
+            {
+                Text modelselect = new Text();
+                modelselect.Value = node.Name;
+                ModelListView.AddItem(modelselect);
+            }
+            Text empty = new Text();
+            empty.SetStyleAuto(null);
+            empty.Value = "Empty";
+            ModelListView.AddItem(empty);
         }
 
     }

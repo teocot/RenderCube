@@ -173,7 +173,9 @@ namespace RenderCube
                     {
                         modelpanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
                     }
+                    modelpanel.RefreshList();
                     currentPanel = this.modelpanel;
+
                     this.panelMode = mode;
                     break;
                     
@@ -209,7 +211,7 @@ namespace RenderCube
             //Button b = CreateButton(10, 10, 100, 100, "test");
             // Box
 
-            Node modelnode = scene.CreateChild(name: "User Node");
+            Node modelnode = scene.CreateChild(name: "Suzanne1");
             modelnode.Position = new Vector3(x: 0, y: 0, z: 0f);
             modelnode.SetScale(1f);
             modelnode.Rotation = new Quaternion(x: 0, y: 0, z: 0);
@@ -220,6 +222,7 @@ namespace RenderCube
 
             StaticModel model1 = modelnode.CreateComponent<StaticModel>();
             model1.Model = models["Suzanne"];
+          
 
             MaterialHelper material1 = new MaterialHelper(materialxml["Default"]);
             userMaterials.Add(currentModel, material1);

@@ -14,11 +14,11 @@ namespace RenderCube
         private Text Label = new Text();
         public ControlBar(string title)
         {
-            this.SetMinSize(0, 24);
+            this.SetMinSize(0, 48);
             this.VerticalAlignment = VerticalAlignment.Top;
             this.LayoutMode = LayoutMode.Horizontal;
             
-            prevButton.SetFixedSize(24, 24);
+            prevButton.SetFixedSize(48, 48);
             this.AddChild(prevButton);
 
             
