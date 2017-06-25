@@ -386,20 +386,24 @@ namespace RenderCube
                         return;
 
                     var graphics = Graphics;
-                    
+                    float X = (float)state.Position.X - (graphics.Width / 2);
+                    float Y = (float)state.Position.Y - this.currentPanel.Height - ((graphics.Height - this.currentPanel.Height)/2);
                     //Yaw += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.X;
                     //Pitch += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.Y;
-                    float value = 4.0f;
-                    bool A = state.Position.X > state.Position.Y;
-                    bool B = state.Position.X + state.Position.Y < (graphics.Width + graphics.Height) / 2;
-                    if (A && B)
-                        CameraNode.Translate(Vector3.UnitY * value * timeStep);
-                    else if( !A && !B )
-                        CameraNode.Translate(-Vector3.UnitY * value * timeStep);
-                    else if (A && !B)
-                        CameraNode.Translate(Vector3.UnitX * value * timeStep);
-                    else if (!A && B)
-                        CameraNode.Translate(-Vector3.UnitX * value * timeStep);
+                    float value = 0.01f;
+                    //bool A = state.Position.X > state.Position.Y;
+                    //bool B = state.Position.X + state.Position.Y < (graphics.Width + graphics.Height) / 2;
+                    CameraNode.Translate(Vector3.UnitX * X * value * timeStep);
+                    CameraNode.Translate(Vector3.UnitY * -Y * value * timeStep);
+
+                    //if (A && B)
+                    //CameraNode.Translate(Vector3.UnitY * value * timeStep);
+                    ////else if( !A && !B )
+                    //    CameraNode.Translate(-Vector3.UnitY * value * timeStep);
+                    ////else if (A && !B)
+                    //    CameraNode.Translate(Vector3.UnitX * value * timeStep);
+                    //else if (!A && B)
+                    //    CameraNode.Translate(-Vector3.UnitX * value * timeStep);
                     
 
                     //CameraNode.Rotation = new Quaternion(Pitch, Yaw, 0);
