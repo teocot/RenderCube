@@ -82,7 +82,7 @@ namespace RenderCube
         {
             // Set style to the UI root so that elements will inherit it
             UI.Root.SetDefaultStyle(ResourceCache.GetXmlFile("UI/DefaultStyle.xml"));
-
+            
             materialxml = new Dictionary<string, XmlFile>
             {
                 {"Default", ResourceCache.GetXmlFile("Materials/DefaultMaterial.xml")},
@@ -136,8 +136,10 @@ namespace RenderCube
 
             //MoveCameraByTouches(timeStep);
             base.OnUpdate(timeStep);
-
-            SimpleMoveCamera2D(timeStep);
+            if (Platform == Platforms.Windows)
+                SimpleMoveCamera2D(timeStep);
+            else if (Platform == Platforms.Android)
+                MoveCameraByTouches(timeStep);
 
         }
 
@@ -369,28 +371,40 @@ namespace RenderCube
             //    if (Pitch > 0) Pitch = MathHelper.Clamp(Pitch - (0.01f * timeStep), 0, 100);
             //    if (Yaw > 0) Yaw = MathHelper.Clamp(Yaw - (0.01f * timeStep), 0, 100);
             //}
+            
             var input = Input;
             for (uint i = 0, num = input.NumTouches; i < num; ++i)
             {
                 TouchState state = input.GetTouch(i);
                 if (state.TouchedElement != null)
                     continue;
-
-                if (state.Delta.X != 0 || state.Delta.Y != 0)
+                if (state.Position.Y < this.currentPanel.Height) continue;
+                if (state.Pressure > 0.0f)
                 {
                     var camera = CameraNode.GetComponent<Camera>();
                     if (camera == null)
                         return;
 
                     var graphics = Graphics;
-
+                    
                     //Yaw += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.X;
                     //Pitch += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.Y;
-                    Pitch = (graphics.Height / 2) - state.Position.Y;
-                    Yaw = (graphics.Width / 2) - state.Position.X;
+                    float value = 4.0f;
+                    bool A = state.Position.X > state.Position.Y;
+                    bool B = state.Position.X + state.Position.Y < (graphics.Width + graphics.Height) / 2;
+                    if (A && B)
+                        CameraNode.Translate(Vector3.UnitY * value * timeStep);
+                    else if( !A && !B )
+                        CameraNode.Translate(-Vector3.UnitY * value * timeStep);
+                    else if (A && !B)
+                        CameraNode.Translate(Vector3.UnitX * value * timeStep);
+                    else if (!A && B)
+                        CameraNode.Translate(-Vector3.UnitX * value * timeStep);
+                    
+
                     //CameraNode.Rotation = new Quaternion(Pitch, Yaw, 0);
-                    CameraNode.Phi -= Pitch * timeStep * 0.01f;
-                    CameraNode.Theta -= Yaw * timeStep * 0.01f;
+                    //CameraNode.Phi -= Pitch * timeStep;
+                    //CameraNode.Theta -= Yaw * timeStep;
                 }
                 else
                 {
@@ -403,7 +417,9 @@ namespace RenderCube
                         CameraNode.Theta -= delta.Y * 0.01f;
                     }
                 }
+
             }
+            CameraNode.LookAt(CameraNode.CenterPosition(), Vector3.UnitY, TransformSpace.World);
         }
 
 

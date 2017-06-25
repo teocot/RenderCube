@@ -18,14 +18,20 @@ namespace RenderCube
             this.VerticalAlignment = VerticalAlignment.Top;
             this.LayoutMode = LayoutMode.Horizontal;
             
-            prevButton.SetFixedSize(48, 48);
+            prevButton.SetFixedSize(36, 36);
             this.AddChild(prevButton);
 
             
             Label.TextAlignment = HorizontalAlignment.Center;
+            Label.HorizontalAlignment = HorizontalAlignment.Center;
+            Label.VerticalAlignment = VerticalAlignment.Center;
+            
+            Label.SetStyleAuto(null);
+            Label.SetFontSize(30);
 
-            Label.Value = title;
-            this.AddChild(Label);
+            Label.Value = "<";
+            //this.AddChild(Label);
+            prevButton.AddChild(Label);
             this.SetStyleAuto(null);
             Label.SetStyleAuto(null);
             prevButton.SetStyleAuto(null);
