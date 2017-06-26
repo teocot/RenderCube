@@ -160,6 +160,7 @@ namespace RenderCube
                     materialpanel.Visible = true;
 
                     materialpanel.OnPrevious = (args => this.PreviousPanelMode());
+                    materialpanel.OnNext = (args => this.NextPanelMode());
                     currentPanel = materialpanel;
                     this.panelMode = mode;
                     break;
@@ -168,6 +169,7 @@ namespace RenderCube
 
                     modelpanel = new ModelPanel(UI.Root, scene, ResourceCache);
                     modelpanel.OnPrevious = (args => this.PreviousPanelMode());
+                    modelpanel.OnNext = (args => this.NextPanelMode());
                     if (Platform == Platforms.Android)
                     {
                         modelpanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
@@ -205,7 +207,19 @@ namespace RenderCube
                     break;
             }
         }
+        public void NextPanelMode()
+        {
+            switch (this.panelMode)
+            {
+                case (PanelMode.Material):
+                    this.SetPanelMode(PanelMode.Model);
 
+                    break;
+                case (PanelMode.Model):
+                    this.SetPanelMode(PanelMode.Material);
+                    break;
+            }
+        }
         void CreateScene()
         {
 

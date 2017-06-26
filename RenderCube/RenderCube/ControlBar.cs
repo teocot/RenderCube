@@ -10,55 +10,58 @@ namespace RenderCube
 {
     class ControlBar : UIElement
     {
-        private Button prevButton = new Button();
+        private Button prevButton;
+        private Button nextButton;
         private Text Label;
         private Font Font;
         public ControlBar(string title, Font font)
         {
             this.SetMinSize(0, 48);
             this.VerticalAlignment = VerticalAlignment.Top;
-            this.LayoutMode = LayoutMode.Horizontal;
+
+            this.SetLayout(LayoutMode.Horizontal,10, new IntRect(0, 0, 0, 0));
+            this.SetStyleAuto(null);
+            
+            this.LayoutFlexScale = new Vector2(0, 0);
             this.Font = font;
-            prevButton.SetFixedSize(36, 36);
+
+            prevButton = CreateButton("<");
+            var OneButton = CreateButton("One");
+            OneButton.HorizontalAlignment = HorizontalAlignment.Center;
+            OneButton.SetFixedWidth(50);
+            nextButton = CreateButton(">");
+            nextButton.HorizontalAlignment = HorizontalAlignment.Right;
+            this.AddChild(prevButton);
+            this.AddChild(new Urho.Gui.UIElement()); // spacer
+            this.AddChild(OneButton);
+            this.AddChild(new Urho.Gui.UIElement()); // spacer
+            this.AddChild(nextButton);
+
+            //prevButton.SetStyle("LeftButton", null);
+        }
+        public Action<ReleasedEventArgs> OnPrevious { set { prevButton.Released += value; } }
+        public Action<ReleasedEventArgs> OnNext { set { nextButton.Released += value; } }
+        Button CreateButton(string text)
+        {
+            var button = new Button();
+            // Create the button and center the text onto it
+            button.SetFixedSize(36, 36);
 
             Label = new Text()
             {
-                Value = "<",
+                Value = text,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            Label.SetFont(font, 20);
+            Label.SetFont(Font, 20);
 
-            prevButton.AddChild(Label);
-            this.AddChild(prevButton);
-            this.SetStyleAuto(null);
+            button.AddChild(Label);
 
-            prevButton.SetStyleAuto(null);
-            //prevButton.SetStyle("LeftButton", null);
+
+            button.SetStyleAuto(null);
+
+            return button;
         }
-        public Action OnNext;
-        public Action<ReleasedEventArgs> OnPrevious { set { prevButton.Released += value; } }
-        //Button CreateButton(int x, int y, int xSize, int ySize, string text)
-        //{
-        //    UIElement root = UI.Root;
-        //    var cache = ResourceCache;
-        //    Font font = cache.GetFont("Fonts/Font.ttf");
-
-        //    // Create the button and center the text onto it
-        //    Button button = new Button();
-        //    root.AddChild(button);
-        //    button.SetStyleAuto(null);
-        //    button.SetPosition(x, y);
-        //    button.SetSize(xSize, ySize);
-
-        //    Text buttonText = new Text();
-        //    button.AddChild(buttonText);
-        //    buttonText.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
-        //    buttonText.SetFont(font, 20);
-        //    buttonText.Value = text;
-
-        //    return button;
-        //}
         //public new bool SetStyleAuto(Urho.Resources.XmlFile file)
         //{
         //    bool ret = base.SetStyleAuto(file);

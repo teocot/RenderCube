@@ -17,6 +17,7 @@ namespace RenderCube
         ControlBar ControlBar;
         MaterialHelper material;
         public Action<ReleasedEventArgs> OnPrevious { set { ControlBar.OnPrevious = value; } }
+        public Action<ReleasedEventArgs> OnNext { set { ControlBar.OnNext = value; } }
         ResourceCache ResourceCache;
         //public MaterialPanel(UIElement parent, Material m, ResourceCache r) : base()
         //{
@@ -63,6 +64,7 @@ namespace RenderCube
 
             this.AddChild(this.ControlBar);
             this.ControlBar.SetStyleAuto(null);
+            //this.ControlBar.SetFixedWidth(this.Width);
             if (material.isSet("RefractIndex"))
             {
                 IORSlider = this.CreateSlider("Ior Ratio", 0.0f, 1.0f);

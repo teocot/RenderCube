@@ -66,8 +66,9 @@ namespace RenderCube
             ValueEditor = new LineEdit();
             ValueEditor.SetStyleAuto(null);
             this.AddChild(ValueEditor);
-            ValueEditor.SetMaxSize(100, height);
+            ValueEditor.SetMaxSize(100, 18);
             ValueEditor.SetFixedWidth(10 * 10);
+           
             ValueEditor.VerticalAlignment = VerticalAlignment.Center;
             //ValueEditor. = new IntVector2(20,height - ValueEditor.TextElement.Height/2);
             //
