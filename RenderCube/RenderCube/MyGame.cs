@@ -236,7 +236,7 @@ namespace RenderCube
             model1.SetMaterial(material1);
 
             
-            SetPanelMode(PanelMode.Material);
+            
             //BoxMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(1.0f, 1.0f, 1.0f));
             //BoxMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
@@ -267,10 +267,10 @@ namespace RenderCube
             //CameraNode.Phi = 3.14f/2.0f;
             scene.AddChild(CameraNode);
             camera = CameraNode.CreateComponent<Camera>();
-
+            SetPanelMode(PanelMode.Material);
             // Viewport
-            Renderer.SetViewport(0, new Viewport(Context, scene, camera, null));
-            
+            //Renderer.SetViewport(0, new Viewport(Context, scene, camera, null));
+
             //String filename = ResourceCache.GetResourceFileName("Scenes/Scene.xml");
             //Urho.IO.File file = new Urho.IO.File(Context,filename, Urho.IO.FileMode.ReadWrite);
             //scene.SaveXml(file, "\t");
