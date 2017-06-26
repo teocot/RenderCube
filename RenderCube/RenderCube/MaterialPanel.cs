@@ -40,6 +40,7 @@ namespace RenderCube
             this.Name = "MaterialPanel";
             this.SetupPanel();
         }
+
         public void SetMaterial(MaterialHelper m)
         {
             this.material = m;
@@ -57,7 +58,7 @@ namespace RenderCube
             this.SetMinSize(this.Parent.Size.X, 100);
             this.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
             this.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Bottom);
-            this.ControlBar = new ControlBar("Material Properties");
+            this.ControlBar = new ControlBar("Material Properties", ResourceCache.GetFont("Fonts/Anonymous Pro.ttf"));
             
 
             this.AddChild(this.ControlBar);

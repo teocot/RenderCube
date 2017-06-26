@@ -53,6 +53,7 @@ namespace RenderCube
         Panel currentPanel;
         MaterialPanel materialpanel;
         ModelPanel modelpanel;
+        Camera camera;
         Dictionary<string, XmlFile> materialxml;
         Dictionary<string, Model> models;
         Dictionary<string, Node> userNodes = new Dictionary<string, Node>();
@@ -145,30 +146,26 @@ namespace RenderCube
 
         public void SetPanelMode(PanelMode mode)
         {
+            if (currentPanel != null)
+            {
+                    currentPanel.Visible = false;
+                    //currentPanel.Remove(); //this doesn't work, so we just leave all the invisible panels.  This is a leak.
+                    currentPanel = null;
+            }
             switch (mode)
             {
                 case PanelMode.Material:
-                    if (currentPanel != null)
-                    {
-                        currentPanel.Visible = false;
-                        currentPanel = null;
-                    }
+
                     materialpanel = new MaterialPanel(UI.Root, userMaterials[currentModel], ResourceCache);
                     materialpanel.Visible = true;
-                    if (Platform == Platforms.Android)
-                    {
-                        materialpanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
-                    }
+
                     materialpanel.OnPrevious = (args => this.PreviousPanelMode());
                     currentPanel = materialpanel;
                     this.panelMode = mode;
                     break;
+
                 case PanelMode.Model:
-                    if (currentPanel != null)
-                    {
-                        currentPanel.Visible = false;
-                        currentPanel = null;
-                    }
+
                     modelpanel = new ModelPanel(UI.Root, scene, ResourceCache);
                     modelpanel.OnPrevious = (args => this.PreviousPanelMode());
                     if (Platform == Platforms.Android)
@@ -177,7 +174,6 @@ namespace RenderCube
                     }
                     modelpanel.RefreshList();
                     currentPanel = this.modelpanel;
-
                     this.panelMode = mode;
                     break;
                     
@@ -186,6 +182,14 @@ namespace RenderCube
                     break;
                 
             }
+            if (Platform == Platforms.Android)
+            {
+                currentPanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
+                Renderer.SetViewport(0, new Viewport(Context, scene, camera, new IntRect(0, currentPanel.Height, Graphics.Width, Graphics.Height), null));
+            }
+            else
+                Renderer.SetViewport(0, new Viewport(Context, scene, camera, new IntRect(0, 0, Graphics.Width, Graphics.Height - currentPanel.Height), null));
+
         }
 
         public void PreviousPanelMode()
@@ -262,7 +266,7 @@ namespace RenderCube
             CameraNode.Radius = 4.0f;
             //CameraNode.Phi = 3.14f/2.0f;
             scene.AddChild(CameraNode);
-            Camera camera = CameraNode.CreateComponent<Camera>();
+            camera = CameraNode.CreateComponent<Camera>();
 
             // Viewport
             Renderer.SetViewport(0, new Viewport(Context, scene, camera, null));
@@ -444,7 +448,7 @@ namespace RenderCube
         {
             UIElement root = UI.Root;
             ResourceCache cache = ResourceCache;
-            Font font = cache.GetFont("Fonts/Font.ttf");
+            Font font = cache.GetFont("Fonts/Anonymous Pro.ttf");
             // Create text and slider below it
             Text sliderText = new Text();
             root.AddChild(sliderText);

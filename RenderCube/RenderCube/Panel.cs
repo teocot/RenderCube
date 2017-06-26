@@ -37,6 +37,7 @@ namespace RenderCube
             Text buttonText = new Text();
             button.AddChild(buttonText);
             buttonText.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
+            buttonText.SetFontSize(20);
             //buttonText.SetFont(font, 20);
             buttonText.Value = text;
 

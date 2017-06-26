@@ -32,7 +32,7 @@ namespace RenderCube
         {
 
             this.SetStyleAuto(null);
-            this.ControlBar = new ControlBar("Model Properties");
+            this.ControlBar = new ControlBar("Model Properties", ResourceCache.GetFont("Fonts/Anonymous Pro.ttf"));
             this.AddChild(this.ControlBar);
             this.ControlBar.SetStyleAuto(null);
             this.SetMinSize(this.Parent.Size.X, 100);

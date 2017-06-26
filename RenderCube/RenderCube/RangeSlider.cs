@@ -41,13 +41,13 @@ namespace RenderCube
         {
             return MathHelper.Clamp(value, this.minRange, this.maxRange);
         }
-        public RangeSlider(string label, Single minRange, Single maxRange, int height = 25) : base()
+        public RangeSlider(string label, Single minRange, Single maxRange, int height = 35) : base()
         {
             this.minRange = minRange;
             this.maxRange = maxRange;
             this.SetLayout(LayoutMode.Horizontal, 10, new IntRect(0, 0, 0, 0));
-
-
+            this.SetStyleAuto(null);
+            this.SetFixedHeight(height);
             Label = new Text();
             Label.Value = label;
             this.AddChild(Label);
@@ -56,7 +56,7 @@ namespace RenderCube
             Label.LayoutFlexScale = new Vector2(0, 0);
             Label.SetMinSize(0, 0);
             Label.SetFixedWidth(10 * label.Length);
-
+            Label.SetAlignment(HorizontalAlignment.Left, VerticalAlignment.Center);
             Slider = new Slider();
             this.AddChild(Slider);
 
@@ -64,9 +64,15 @@ namespace RenderCube
             Slider.SetMaxSize(100000, height);
 
             ValueEditor = new LineEdit();
+            ValueEditor.SetStyleAuto(null);
             this.AddChild(ValueEditor);
             ValueEditor.SetMaxSize(100, height);
             ValueEditor.SetFixedWidth(10 * 10);
+            ValueEditor.VerticalAlignment = VerticalAlignment.Center;
+            //ValueEditor. = new IntVector2(20,height - ValueEditor.TextElement.Height/2);
+            //
+            ValueEditor.TextElement.VerticalAlignment = VerticalAlignment.Center;
+            ValueEditor.TextElement.SetStyleAuto(null);
             //when the slider changes, set the value display and call the action function;
             Slider.SliderChanged += (args =>
             {
@@ -89,10 +95,10 @@ namespace RenderCube
                 //ValueEditor.Text = Slider.Value.ToString();
             });
             //ValueEditor.Focused += (args => ValueEditor.Selected=true);
-            this.SetStyleAuto(null);
+            
             Label.SetStyleAuto(null);
             Slider.SetStyleAuto(null);
-            ValueEditor.SetStyleAuto(null);
+            
         }
     }
 }
