@@ -10,10 +10,20 @@ namespace RenderCube
 {
     class ControlBar : UIElement
     {
-        private Button prevButton;
-        private Button nextButton;
+        private Button PrevButton;
+        private Button NextButton;
+        private Button SuzanneButton;
+        private Button TeapotButton;
+        private Button CubeButton;
+
         private Text Label;
         private Font Font;
+
+        public Action<ReleasedEventArgs> OnPrevious { set { PrevButton.Released += value; } }
+        public Action<ReleasedEventArgs> OnNext { set { NextButton.Released += value; } }
+        public Action<ReleasedEventArgs> OnSuzanne { set { SuzanneButton.Released += value; } }
+        public Action<ReleasedEventArgs> OnCube { set { CubeButton.Released += value; } }
+        public Action<ReleasedEventArgs> OnTeapot { set { TeapotButton.Released += value; } }
         public ControlBar(string title, Font font)
         {
             this.SetMinSize(0, 48);
@@ -25,23 +35,27 @@ namespace RenderCube
             this.LayoutFlexScale = new Vector2(0, 0);
             this.Font = font;
 
-            prevButton = CreateButton("<");
-            var OneButton = CreateButton("One");
-            OneButton.HorizontalAlignment = HorizontalAlignment.Center;
-            OneButton.SetFixedWidth(50);
-            nextButton = CreateButton(">");
-            nextButton.HorizontalAlignment = HorizontalAlignment.Right;
-            this.AddChild(prevButton);
-            this.AddChild(new Urho.Gui.UIElement()); // spacer
-            this.AddChild(OneButton);
-            this.AddChild(new Urho.Gui.UIElement()); // spacer
-            this.AddChild(nextButton);
+            PrevButton = CreateButton("<", HorizontalAlignment.Left);
+            SuzanneButton = CreateButton("Suzanne", HorizontalAlignment.Center);
+            TeapotButton = CreateButton("Teapot", HorizontalAlignment.Center);
+            CubeButton = CreateButton("Cube", HorizontalAlignment.Center);
+            NextButton = CreateButton(">", HorizontalAlignment.Right);
 
-            //prevButton.SetStyle("LeftButton", null);
+
+            this.AddChild(PrevButton);
+            this.AddChild(new Spacer()); 
+            this.AddChild(SuzanneButton);
+            this.AddChild(new Spacer(12));
+            this.AddChild(CubeButton);
+            this.AddChild(new Spacer(12));
+            this.AddChild(TeapotButton);
+            this.AddChild(new Spacer()); 
+            this.AddChild(NextButton);
+
+            //prevButton.SetStyle("LeftButton", null);  // Couldn't get this to work.  This would be ideal.
         }
-        public Action<ReleasedEventArgs> OnPrevious { set { prevButton.Released += value; } }
-        public Action<ReleasedEventArgs> OnNext { set { nextButton.Released += value; } }
-        Button CreateButton(string text)
+
+        Button CreateButton(string text, HorizontalAlignment align = HorizontalAlignment.Left)
         {
             var button = new Button();
             // Create the button and center the text onto it
@@ -57,9 +71,9 @@ namespace RenderCube
 
             button.AddChild(Label);
 
-
+            button.SetFixedWidth(button.GetChild(0).Width + 16);
             button.SetStyleAuto(null);
-
+            button.HorizontalAlignment = align;
             return button;
         }
         //public new bool SetStyleAuto(Urho.Resources.XmlFile file)

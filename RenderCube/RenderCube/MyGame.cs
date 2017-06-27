@@ -65,7 +65,12 @@ namespace RenderCube
         protected bool TouchEnabled { get; set; }
         protected LookSphereNode CameraNode { get; set; }
         protected MonoDebugHud MonoDebugHud { get; set; }
-
+        private Vector3 currentPosition = new Vector3(0.0f, 0.0f, 0.0f);
+        public Vector3 nextPosition { get {
+                Vector3 ret = currentPosition;
+                currentPosition += new Vector3(0.0f, 0.0f, 2.0f);
+                return ret;
+            } }
         [Preserve]
         public MyGame(ApplicationOptions options = null) : base(options) { }
 
@@ -83,7 +88,6 @@ namespace RenderCube
         {
             // Set style to the UI root so that elements will inherit it
             UI.Root.SetDefaultStyle(ResourceCache.GetXmlFile("UI/DefaultStyle.xml"));
-            
             materialxml = new Dictionary<string, XmlFile>
             {
                 {"Default", ResourceCache.GetXmlFile("Materials/DefaultMaterial.xml")},
@@ -99,6 +103,7 @@ namespace RenderCube
                 {"Teapot", ResourceCache.GetModel("Models/Teapot.mdl") },
             };
 
+            userNodes = new Dictionary<string, Node> { };
 
             Log.LogMessage += e => Debug.WriteLine($"[{e.Level}] {e.Message}");
             TouchEnabled = true;
@@ -159,8 +164,11 @@ namespace RenderCube
                     materialpanel = new MaterialPanel(UI.Root, userMaterials[currentModel], ResourceCache);
                     materialpanel.Visible = true;
 
-                    materialpanel.OnPrevious = (args => this.PreviousPanelMode());
-                    materialpanel.OnNext = (args => this.NextPanelMode());
+                    materialpanel.ControlBar.OnPrevious = (args => this.PreviousPanelMode());
+                    materialpanel.ControlBar.OnNext = (args => this.NextPanelMode());
+                    materialpanel.ControlBar.OnCube = (args => this.SelectModel("Box"));
+                    materialpanel.ControlBar.OnSuzanne = (args => this.SelectModel("Suzanne"));
+                    materialpanel.ControlBar.OnTeapot = (args => this.SelectModel("Teapot"));
                     currentPanel = materialpanel;
                     this.panelMode = mode;
                     break;
@@ -168,8 +176,8 @@ namespace RenderCube
                 case PanelMode.Model:
 
                     modelpanel = new ModelPanel(UI.Root, scene, ResourceCache);
-                    modelpanel.OnPrevious = (args => this.PreviousPanelMode());
-                    modelpanel.OnNext = (args => this.NextPanelMode());
+                    modelpanel.ControlBar.OnPrevious = (args => this.PreviousPanelMode());
+                    modelpanel.ControlBar.OnNext = (args => this.NextPanelMode());
                     if (Platform == Platforms.Android)
                     {
                         modelpanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
@@ -220,6 +228,34 @@ namespace RenderCube
                     break;
             }
         }
+
+        public void AddModel(string name)
+        {
+            Node modelnode = scene.CreateChild(name);
+            modelnode.Position = this.nextPosition;
+            modelnode.SetScale(1f);
+            modelnode.Rotation = new Quaternion(x: 0, y: 0, z: 0);
+
+            currentModel = name;
+            //The box material is set up as 50% texture and 50% cubemap
+            userNodes.Add(currentModel, modelnode);
+
+            StaticModel model1 = modelnode.CreateComponent<StaticModel>();
+            model1.Model = models[name];
+
+
+            MaterialHelper material1 = new MaterialHelper(materialxml["Default"]);
+            userMaterials.Add(currentModel, material1);
+
+            model1.SetMaterial(material1);
+
+        }
+        void SelectModel(string name) {
+            currentModel = name;
+            CameraNode.UpdatePosition();
+            SetPanelMode(this.panelMode);
+
+        }
         void CreateScene()
         {
 
@@ -227,28 +263,17 @@ namespace RenderCube
             scene = new Scene(Context);
             scene.CreateComponent<Octree>();
 
+            this.AddModel("Suzanne");
+            this.AddModel("Box");
+            this.AddModel("Teapot");
+            currentModel = "Box";
+            //correct for teapot model's origin
+            //userNodes["Teapot"].Position += new Vector3(0.0f, -0.5f, 0.0f); 
 
             //Button b = CreateButton(10, 10, 100, 100, "test");
             // Box
 
-            Node modelnode = scene.CreateChild(name: "Suzanne1");
-            modelnode.Position = new Vector3(x: 0, y: 0, z: 0f);
-            modelnode.SetScale(1f);
-            modelnode.Rotation = new Quaternion(x: 0, y: 0, z: 0);
-
-            currentModel = "UserModel1";
-            //The box material is set up as 50% texture and 50% cubemap
-            userNodes.Add(currentModel, modelnode);
-
-            StaticModel model1 = modelnode.CreateComponent<StaticModel>();
-            model1.Model = models["Suzanne"];
-          
-
-            MaterialHelper material1 = new MaterialHelper(materialxml["Default"]);
-            userMaterials.Add(currentModel, material1);
-
-            model1.SetMaterial(material1);
-
+            
             
             
             //BoxMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(1.0f, 1.0f, 1.0f));
@@ -276,9 +301,9 @@ namespace RenderCube
 
             var origin = new Vector3(0.0f, 0.0f, 0.0f);
             // Camera
-            CameraNode = new LookSphereNode(name: "camera", center: () => origin);
+            CameraNode = new LookSphereNode(name: "camera", center: () => userNodes[currentModel].Position);
             CameraNode.Radius = 4.0f;
-            //CameraNode.Phi = 3.14f/2.0f;
+
             scene.AddChild(CameraNode);
             camera = CameraNode.CreateComponent<Camera>();
             SetPanelMode(PanelMode.Material);
@@ -333,50 +358,7 @@ namespace RenderCube
             //and is locked to the sphere around CameraNode.CenterPosition.
         }
 
-        void InitWindow()
-        {
-        //    // Create the Window and add it to the UI's root node
-        //    window = new Window();
-        //    uiRoot.AddChild(window);
 
-        //    // Set Window size and layout settings
-        //    window.SetMinSize(384, 192);
-        //    window.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
-        //    window.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
-        //    window.Name = "Window";
-
-        //    // Create Window 'titlebar' container
-        //    UIElement titleBar = new UIElement();
-        //    titleBar.SetMinSize(0, 24);
-        //    titleBar.VerticalAlignment = VerticalAlignment.Top;
-        //    titleBar.LayoutMode = LayoutMode.Horizontal;
-
-        //    // Create the Window title Text
-        //    var windowTitle = new Text();
-        //    windowTitle.Name = "WindowTitle";
-        //    windowTitle.Value = "Hello GUI!";
-
-        //    // Create the Window's close button
-        //    Button buttonClose = new Button();
-        //    buttonClose.Name = "CloseButton";
-
-        //    // Add the controls to the title bar
-        //    titleBar.AddChild(windowTitle);
-        //    titleBar.AddChild(buttonClose);
-
-        //    // Add the title bar to the Window
-        //    window.AddChild(titleBar);
-
-        //    // Apply styles
-        //    window.SetStyleAuto(null);
-        //    windowTitle.SetStyleAuto(null);
-        //    buttonClose.SetStyle("CloseButton", null);
-
-        //    buttonClose.SubscribeToReleased(_ => Exit());
-
-        //    // Subscribe also to all UI mouse clicks just to see where we have clicked
-        //    UI.SubscribeToUIMouseClick(HandleControlClicked);
-        }
         protected void MoveCameraByTouches(float timeStep)
         {
             if (UI.FocusElement != null)
@@ -480,49 +462,8 @@ namespace RenderCube
 
             return slider;
         }
-        Button CreateButton(int x, int y, int xSize, int ySize, string text)
-        {
-            UIElement root = UI.Root;
-            var cache = ResourceCache;
-            Font font = cache.GetFont("Fonts/Font.ttf");
+ 
 
-            // Create the button and center the text onto it
-            Button button = new Button();
-            root.AddChild(button);
-            button.SetStyleAuto(null);
-            button.SetPosition(x, y);
-            button.SetSize(xSize, ySize);
-
-            Text buttonText = new Text();
-            button.AddChild(buttonText);
-            buttonText.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
-            buttonText.SetFont(font, 20);
-            buttonText.Value = text;
-
-            return button;
-        }
-
-
-        //void CreateLogo()
-        //{
-
-        //    var logoTexture = ResourceCache.GetTexture2D("Textures/LogoLarge.png");
-
-        //    if (logoTexture == null)
-        //        return;
-
-        //    ui = UI;
-        //    logoSprite = ui.Root.CreateSprite();
-        //    logoSprite.Texture = logoTexture;
-        //    int w = logoTexture.Width;
-        //    int h = logoTexture.Height;
-        //    logoSprite.SetScale(256.0f / w);
-        //    logoSprite.SetSize(w, h);
-        //    logoSprite.SetHotSpot(0, h);
-        //    logoSprite.SetAlignment(HorizontalAlignment.Left, VerticalAlignment.Bottom);
-        //    logoSprite.Opacity = 0.75f;
-        //    logoSprite.Priority = -100;
-        //}
 
         void SetWindowAndTitleIcon()
         {

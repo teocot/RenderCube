@@ -6,11 +6,9 @@ namespace RenderCube.Desktop
     {
         static void Main(string[] args)
         {
-            try
-            {
+            
                 new MyGame(new ApplicationOptions("Data")).Run();
-            }
-            catch (System.Exception e) { }
+
         }
     }
 }

@@ -13,9 +13,8 @@ namespace RenderCube
 
 
         Node SceneNode;
-        ControlBar ControlBar;
-        public Action<ReleasedEventArgs> OnPrevious { set { ControlBar.OnPrevious = value; } }
-        public Action<ReleasedEventArgs> OnNext { set { ControlBar.OnNext = value; } }
+        public ControlBar ControlBar;
+       
         ResourceCache ResourceCache;
         ListView ModelListView;
         Dictionary<string, Model> models;

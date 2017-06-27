@@ -14,10 +14,8 @@ namespace RenderCube
         RangeSlider DiffSlider;
         RangeSlider EnvSlider;
         RangeSlider RefractSlider;
-        ControlBar ControlBar;
+        public ControlBar ControlBar;
         MaterialHelper material;
-        public Action<ReleasedEventArgs> OnPrevious { set { ControlBar.OnPrevious = value; } }
-        public Action<ReleasedEventArgs> OnNext { set { ControlBar.OnNext = value; } }
         ResourceCache ResourceCache;
         //public MaterialPanel(UIElement parent, Material m, ResourceCache r) : base()
         //{
@@ -68,7 +66,7 @@ namespace RenderCube
             if (material.isSet("RefractIndex"))
             {
                 IORSlider = this.CreateSlider("Ior Ratio", 0.0f, 1.0f);
-                                IORSlider.Value = 0.666f;
+                                IORSlider.Value = material.RefractIndex;
                 IORSlider.SliderChanged +=
                     (args => material.RefractIndex = args.Value);
 
@@ -77,7 +75,7 @@ namespace RenderCube
             if (material.isSet("MatRefractColor"))
             {
                 RefractSlider = this.CreateSlider("Refract", 0.0f, 1.5f);
-
+                RefractSlider.Value = material.MatRefractColor.X;
                 RefractSlider.SliderChanged +=
                     (args => material.MatRefractColor = Vector3.One * args.Value);
 
@@ -86,13 +84,14 @@ namespace RenderCube
             if (material.isSet("MatDiffColor"))
             {
                 DiffSlider = this.CreateSlider("Texture", 0.0f, 1.5f);
-
+                DiffSlider.Value = material.MatDiffColor.X;
                 DiffSlider.SliderChanged +=
                     (args => material.MatDiffColor = Vector4.One * args.Value);
             }
             if (material.isSet("MatEnvMapColor"))
             {
                 EnvSlider = this.CreateSlider("EnvMap", 0.0f, 1.5f);
+                EnvSlider.Value = material.MatEnvMapColor.X;
                 EnvSlider.SliderChanged +=
                     (args => material.MatEnvMapColor = Vector3.One * args.Value);
             }
