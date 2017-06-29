@@ -70,10 +70,9 @@ namespace RenderCube
             ValueEditor.SetFixedWidth(10 * 10);
            
             ValueEditor.VerticalAlignment = VerticalAlignment.Center;
-            //ValueEditor. = new IntVector2(20,height - ValueEditor.TextElement.Height/2);
-            //
             ValueEditor.TextElement.VerticalAlignment = VerticalAlignment.Center;
             ValueEditor.TextElement.SetStyleAuto(null);
+
             //when the slider changes, set the value display and call the action function;
             Slider.SliderChanged += (args =>
             {
@@ -89,13 +88,9 @@ namespace RenderCube
                 {
 
                         this.Value = this.Clamp(value);
-                        //ValueEditor.Text = Slider.Value.ToString();
-                    
-                    //ValueEditor.Text = value.ToString();
                 }
-                //ValueEditor.Text = Slider.Value.ToString();
+
             });
-            //ValueEditor.Focused += (args => ValueEditor.Selected=true);
             
             Label.SetStyleAuto(null);
             Slider.SetStyleAuto(null);

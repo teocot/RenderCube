@@ -46,12 +46,9 @@ namespace RenderCube
             this.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
             this.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Bottom);
             this.ControlBar = new ControlBar("Material Properties", ResourceCache.GetFont("Fonts/Anonymous Pro.ttf"));
-            
-
-            this.AddChild(this.ControlBar);
-            
+            this.AddChild(this.ControlBar);  
             this.ControlBar.SetStyleAuto(null);
-            //this.ControlBar.SetFixedWidth(this.Width);
+
             if (material.isSet("RefractIndex"))
             {
                 IORSlider = this.CreateSlider("Ior Ratio", 0.0f, 1.0f);

@@ -51,9 +51,18 @@ varying vec4 vWorldPos;
 	//uniforms for frensel fragment shader
 	#ifdef COMPILEPS
 		uniform float cRefractIndex;
-		uniform vec3 cRefractColor;
+		uniform vec3 cMatRefractColor;
 	#endif
 
+	//this is from the glsl 1.1 specification
+	//this is from the glsl 1.1 specification
+//	vec3 refract(vec3 I, vec3 N, float eta) {
+//		float k = 1.0 - eta * eta * (1.0 - dot(N, I) * dot(N, I));
+//		if (k < 0.0)
+//			return vec3(0.0, 0.0, 0.0); // or genDType(0.0)
+//		else
+//			return eta * I - (eta * dot(N, I) + sqrt(k)) * N;
+//	}
 #endif
 
 void VS()
@@ -218,7 +227,7 @@ void PS()
         #endif
 		#ifdef REFRACT
 			vec3 refractvec = refract(vEyeVec.xyz, normal, cRefractIndex);
-			finalColor += cRefractColor * textureCube(sEnvCubeMap, refractvec).rgb;
+			finalColor += cMatRefractColor * textureCube(sEnvCubeMap, refractvec).rgb;
 		#endif
         #ifdef LIGHTMAP
             finalColor += texture2D(sEmissiveMap, vTexCoord2).rgb * diffColor.rgb;
@@ -254,8 +263,8 @@ void PS()
             finalColor += cMatEnvMapColor * textureCube(sEnvCubeMap, reflect(vReflectionVec, normal)).rgb;
         #endif
 		#ifdef REFRACT
-			vec3 refractvec = refract(vEyeVec.xyz, normal, cRefractIndex);
-			finalColor += cRefractColor * textureCube(sEnvCubeMap, refractvec).rgb;
+			vec3 refractvec = refract(vEyeVec.xyz, normal, -1.0 * cRefractIndex);
+			finalColor += cMatRefractColor * textureCube(sEnvCubeMap, refractvec).rgb;
 		#endif
         #ifdef LIGHTMAP
             finalColor += texture2D(sEmissiveMap, vTexCoord2).rgb * diffColor.rgb;

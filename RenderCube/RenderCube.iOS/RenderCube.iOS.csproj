@@ -167,10 +167,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </BundleResource>
     <BundleResource Include="Resources\Data\Fonts\OFL.txt" />
-    <BundleResource Include="Resources\Data\Materials\BoxMaterial.xml" />
     <BundleResource Include="Resources\Data\Materials\Skybox2.xml" />
     <BundleResource Include="Resources\Data\Materials\Skybox3.xml" />
-    <BundleResource Include="Resources\Data\Materials\SphereMaterial.xml" />
     <BundleResource Include="Resources\Data\Techniques\DiffEnvCubeRefract.xml" />
     <BundleResource Include="Resources\Data\Textures\output_pmrem_negx.dds" />
     <BundleResource Include="Resources\Data\Textures\output_pmrem_negy.dds" />
@@ -198,6 +196,7 @@
     <BundleResource Include="Resources\Data\Textures\WaterNoise.dds" />
     <BundleResource Include="Resources\Data\Textures\xamarin.dds" />
     <BundleResource Include="Resources\Data\Textures\xamarin.png" />
+    <BundleResource Include="Resources\Data\Materials\DefaultMaterial.xml" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />

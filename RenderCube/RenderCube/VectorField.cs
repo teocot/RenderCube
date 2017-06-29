@@ -41,7 +41,7 @@ namespace RenderCube
                 lZ.Text = value.Z.ToString();
             }
         }
-        //3 editor action delegates.
+
         public VectorField(Vector3 values, string xlabel = "X", string ylabel = "Y", string zlabel = "Z") : base()
         {
             this.initialvalue = values;

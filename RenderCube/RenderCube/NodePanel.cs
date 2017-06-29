@@ -46,9 +46,10 @@ namespace RenderCube
             this.AddChild(RotationField);
             RotationField.SetStyleAuto(null);
 
-            ScaleSlider = new RangeSlider("Scale", 0.01f, 5.0f);
+            ScaleSlider = new RangeSlider("Scale", 0.1f, 5.0f);
             ScaleSlider.SetStyleAuto(null);
             this.AddChild(ScaleSlider);
+            ScaleSlider.Value = 1.0f;
             this.Name = "ModelPanel";
         }
     }

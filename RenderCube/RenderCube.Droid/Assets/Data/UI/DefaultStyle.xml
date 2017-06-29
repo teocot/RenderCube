@@ -28,11 +28,10 @@
         <attribute name="Focus Mode" value="NotFocusable" />
     </element>
     <element type="LeftButton" style="Button" auto="false">
-      <attribute name="Min Size" value="16 16" />
-      <attribute name="Max Size" value="16 16" />
-      <attribute name="Image Rect" value="144 0 160 16" />
-      <attribute name="Hover Image Offset" value="0 16" />
-      <attribute name="Focus Mode" value="NotFocusable" />
+        <attribute name="Min Size" value="16 16" />
+        <attribute name="Max Size" value="16 16" />
+        <attribute name="Image Rect" value="144 0 160 16" />
+        <attribute name="Focus Mode" value="NotFocusable" />
     </element>
     <element type="Cursor">
         <attribute name="Shapes">

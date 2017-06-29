@@ -46,7 +46,7 @@ namespace RenderCube
                 lZ.Text = value.Z.ToString();
             }
         }
-        //3 editor action delegates.
+
         public QuaternionField(Quaternion values, string xlabel = "X", string ylabel = "Y", string zlabel = "Z", string wlabel = "W") : base()
         {
             this.initialvalue = values;

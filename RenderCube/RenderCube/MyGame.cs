@@ -49,29 +49,29 @@ namespace RenderCube
         UrhoConsole Console;
         DebugHud DebugHud;
         PanelMode PanelMode;
-        public string CurrentModel; //this is the key that tells us which model is currently selected
+        public string CurrentModel = "Cube"; //this is the key that tells us which model is currently selected
         Panel CurrentPanel;
         MaterialPanel MaterialPanel;
         NodePanel NodePanel;
         Camera Camera;
-        Dictionary<string, XmlFile> materialxml;
-        Dictionary<string, Model> models;
-        Dictionary<string, Node> userNodes = new Dictionary<string, Node>();
-        Dictionary<string, MaterialHelper> userMaterials = new Dictionary<string, MaterialHelper>();
-
+        Dictionary<string, XmlFile> MaterialXml;
+        Dictionary<string, Model> Models;
+        Dictionary<string, Node> UserNodes = new Dictionary<string, Node>();
+        Dictionary<string, MaterialHelper> UserMaterials = new Dictionary<string, MaterialHelper>();
+        
         protected const float TouchSensitivity = 2;
         protected float Yaw { get; set; }
         protected float Pitch { get; set; }
         protected bool TouchEnabled { get; set; }
         protected LookSphereNode CameraNode { get; set; }
         protected MonoDebugHud MonoDebugHud { get; set; }
-        private Vector3 currentPosition = new Vector3(0.0f, 0.0f, 0.0f);
-        public Vector3 nextPosition
+        private Vector3 CurrentPosition = new Vector3(0.0f, 0.0f, 0.0f); // this is the current position to add new models to
+        public Vector3 NextPosition
         {
             get
             {
-                Vector3 ret = currentPosition;
-                currentPosition += new Vector3(0.0f, 0.0f, 2.0f);
+                Vector3 ret = CurrentPosition;
+                CurrentPosition += new Vector3(0.0f, 0.0f, 2.0f);
                 return ret;
             }
         }
@@ -92,22 +92,22 @@ namespace RenderCube
         {
             // Set style to the UI root so that elements will inherit it
             UI.Root.SetDefaultStyle(ResourceCache.GetXmlFile("UI/DefaultStyle.xml"));
-            materialxml = new Dictionary<string, XmlFile>
+            MaterialXml = new Dictionary<string, XmlFile>
             {
                 {"Default", ResourceCache.GetXmlFile("Materials/DefaultMaterial.xml")},
                // {"BoxMaterial",  new MaterialHelper(ResourceCache.GetXmlFile("Materials/BoxMaterial.xml")) },
                // {"TeapotMaterial",  new MaterialHelper(ResourceCache.GetXmlFile("Materials/TeapotMaterial.xml")) }
             };
 
-            models = new Dictionary<string, Model>
+            Models = new Dictionary<string, Model>
             {
                 {"Sphere", ResourceCache.GetModel("Models/Sphere.mdl")},
-                {"Box", ResourceCache.GetModel("Models/Box.mdl") },
+                {"Cube", ResourceCache.GetModel("Models/Box.mdl") },
                 {"Suzanne", ResourceCache.GetModel("Models/Suzanne.mdl") },
                 {"Teapot", ResourceCache.GetModel("Models/Teapot.mdl") },
             };
 
-            userNodes = new Dictionary<string, Node> { };
+            UserNodes = new Dictionary<string, Node> { };
 
             Log.LogMessage += e => Debug.WriteLine($"[{e.Level}] {e.Message}");
             TouchEnabled = true;
@@ -120,14 +120,12 @@ namespace RenderCube
             if (Platform == Platforms.Windows)
             {
                 Input.SetMouseVisible(true, false);
-                //this.JoystickLayoutPatch = JoystickLayoutPatches.Hidden;
                 SimpleCreateInstructions("Control The Camera with WASD");
             }
             Input.Enabled = true;
             MonoDebugHud = new MonoDebugHud(this);
             MonoDebugHud.Show();
 
-            //CreateLogo();
             SetWindowAndTitleIcon();
             CreateConsoleAndDebugHud();
             Input.KeyDown += HandleKeyDown;
@@ -138,19 +136,16 @@ namespace RenderCube
             base.Start();
         }
 
-        //this tells the game engine to use the joystick and zoom in (only on android and IOS)
+        // Disable the Joystick layout patch, we use a custom screen joystick now.
         protected string JoystickLayoutPatch => JoystickLayoutPatches.Hidden;
 
         protected override void OnUpdate(float timeStep)
         {
-
-            //MoveCameraByTouches(timeStep);
             base.OnUpdate(timeStep);
             if (Platform == Platforms.Windows)
                 SimpleMoveCamera2D(timeStep);
             else if (Platform == Platforms.Android)
                 MoveCameraByTouches(timeStep);
-
         }
 
         public void SetPanelMode(PanelMode mode)
@@ -158,19 +153,19 @@ namespace RenderCube
             if (CurrentPanel != null)
             {
                 CurrentPanel.Visible = false;
-                //currentPanel.Remove(); //this doesn't work, so we just leave all the invisible panels.  This is a leak.
+                //currentPanel.Remove(); //this doesn't work, so we just leave all the invisible panels.  This is a memory leak.
                 CurrentPanel = null;
             }
             switch (mode)
             {
                 case PanelMode.Material:
 
-                    MaterialPanel = new MaterialPanel(UI.Root, userMaterials[CurrentModel], ResourceCache);
+                    MaterialPanel = new MaterialPanel(UI.Root, UserMaterials[CurrentModel], ResourceCache);
                     MaterialPanel.Visible = true;
 
                     MaterialPanel.ControlBar.OnPrevious = (args => this.PreviousPanelMode());
                     MaterialPanel.ControlBar.OnNext = (args => this.NextPanelMode());
-                    MaterialPanel.ControlBar.OnCube = (args => this.SelectModel("Box"));
+                    MaterialPanel.ControlBar.OnCube = (args => this.SelectModel("Cube"));
                     MaterialPanel.ControlBar.OnSuzanne = (args => this.SelectModel("Suzanne"));
                     MaterialPanel.ControlBar.OnTeapot = (args => this.SelectModel("Teapot"));
                     CurrentPanel = MaterialPanel;
@@ -179,25 +174,25 @@ namespace RenderCube
 
                 case PanelMode.Node:
 
-                    NodePanel = new NodePanel(UI.Root, userNodes[CurrentModel], ResourceCache);
+                    NodePanel = new NodePanel(UI.Root, UserNodes[CurrentModel], ResourceCache);
                     NodePanel.ControlBar.OnPrevious = (args => this.PreviousPanelMode());
                     NodePanel.ControlBar.OnNext = (args => this.NextPanelMode());
-                    NodePanel.ControlBar.OnCube = (args => this.SelectModel("Box"));
+                    NodePanel.ControlBar.OnCube = (args => this.SelectModel("Cube"));
                     NodePanel.ControlBar.OnSuzanne = (args => this.SelectModel("Suzanne"));
                     NodePanel.ControlBar.OnTeapot = (args => this.SelectModel("Teapot"));
                     NodePanel.PositionField.OnTextFinished = (args =>
                     {
-                        userNodes[CurrentModel].Position = args.Value;
+                        UserNodes[CurrentModel].Position = args.Value;
                         CameraNode.UpdatePosition();
                     });
                     NodePanel.RotationField.OnTextFinished = (args =>
                     {
-                        userNodes[CurrentModel].Rotation = new Quaternion(Vector3.Zero, 1.0f);
-                        userNodes[CurrentModel].Rotate(args.Value, TransformSpace.World);
+                        UserNodes[CurrentModel].Rotation = new Quaternion(Vector3.Zero, 1.0f);
+                        UserNodes[CurrentModel].Rotate(args.Value, TransformSpace.World);
                         CameraNode.UpdatePosition();
                     });
                     NodePanel.ScaleSlider.SliderChanged += (args) => {
-                        userNodes[CurrentModel].Scale = new Vector3(args.Value, args.Value, args.Value);
+                        UserNodes[CurrentModel].Scale = new Vector3(args.Value, args.Value, args.Value);
                         };
 
                     CurrentPanel = this.NodePanel;
@@ -249,22 +244,22 @@ namespace RenderCube
         public void AddModel(string name)
         {
             Node modelnode = scene.CreateChild(name);
-            modelnode.Position = this.nextPosition;
+            modelnode.Position = this.NextPosition;
             modelnode.SetScale(1f);
             modelnode.Rotation = new Quaternion(x: 0, y: 0, z: 0);
             modelnode.Name = name;
             CurrentModel = name;
-            //The box material is set up as 50% texture and 50% cubemap
-            userNodes.Add(CurrentModel, modelnode);
+
+            UserNodes.Add(CurrentModel, modelnode);
 
             StaticModel model1 = modelnode.CreateComponent<StaticModel>();
-            model1.Model = models[name];
+            model1.Model = Models[name];
 
 
-            MaterialHelper material1 = new MaterialHelper(materialxml["Default"]);
-            material1.RefractIndex = 0.66f;
+            MaterialHelper material1 = new MaterialHelper(MaterialXml["Default"]);
+            material1.RefractIndex = 0.66f; // we have to set these to the same values in Default.xml because no .GetShaderParameter()
             material1.MatRefractColor = new Vector3(1.0f, 1.0f, 1.0f);
-            userMaterials.Add(CurrentModel, material1);
+            UserMaterials.Add(CurrentModel, material1);
 
             model1.SetMaterial(material1);
 
@@ -283,26 +278,11 @@ namespace RenderCube
             scene = new Scene(Context);
             scene.CreateComponent<Octree>();
 
+            // models
             this.AddModel("Suzanne");
-            this.AddModel("Box");
+            this.AddModel("Cube");
             this.AddModel("Teapot");
-            CurrentModel = "Box";
-            //correct for teapot model's origin
-            //userNodes["Teapot"].Position += new Vector3(0.0f, -0.5f, 0.0f); 
-
-            //Button b = CreateButton(10, 10, 100, 100, "test");
-            // Box
-
-
-
-
-            //BoxMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(1.0f, 1.0f, 1.0f));
-            //BoxMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
-
-            //Set up test material panel
-
-
-
+            CurrentModel = "Cube";
 
             // Light
             Node lightNode = scene.CreateChild(name: "light");
@@ -321,19 +301,20 @@ namespace RenderCube
 
             var origin = new Vector3(0.0f, 0.0f, 0.0f);
             // Camera
-            CameraNode = new LookSphereNode(name: "camera", center: () => userNodes[CurrentModel].Position);
+            CameraNode = new LookSphereNode(name: "camera", center: () => UserNodes[CurrentModel].Position);
             CameraNode.Radius = 4.0f;
 
             scene.AddChild(CameraNode);
             Camera = CameraNode.CreateComponent<Camera>();
             SetPanelMode(PanelMode.Material);
-            // Viewport
-            //Renderer.SetViewport(0, new Viewport(Context, scene, camera, null));
 
+
+            ///I left this is as a demonstration of saving data.  All urho data structures can be exported as xml this way.
             //String filename = ResourceCache.GetResourceFileName("Scenes/Scene.xml");
             //Urho.IO.File file = new Urho.IO.File(Context,filename, Urho.IO.FileMode.ReadWrite);
             //scene.SaveXml(file, "\t");
 
+            // This is here to demonstrate how animations can be done.
             // Do actions
             //await model1Node.RunActionsAsync(new EaseBounceOut(new ScaleTo(duration: 1f, scale: 1)));
             //await boxNode.RunActionsAsync(new RepeatForever(new MoveBy(duration: 1, position: new Vector3(0.001f, 0.0f, 0.0f))));
@@ -386,11 +367,6 @@ namespace RenderCube
 
             if (!TouchEnabled || CameraNode == null)
                 return;
-            //if(Input.NumTouches == 0)
-            //{
-            //    if (Pitch > 0) Pitch = MathHelper.Clamp(Pitch - (0.01f * timeStep), 0, 100);
-            //    if (Yaw > 0) Yaw = MathHelper.Clamp(Yaw - (0.01f * timeStep), 0, 100);
-            //}
 
             var input = Input;
             for (uint i = 0, num = input.NumTouches; i < num; ++i)
@@ -408,27 +384,13 @@ namespace RenderCube
                     var graphics = Graphics;
                     float X = (float)state.Position.X - (graphics.Width / 2);
                     float Y = (float)state.Position.Y - this.CurrentPanel.Height - ((graphics.Height - this.CurrentPanel.Height) / 2);
-                    //Yaw += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.X;
-                    //Pitch += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.Y;
+
                     float value = 0.01f;
-                    //bool A = state.Position.X > state.Position.Y;
-                    //bool B = state.Position.X + state.Position.Y < (graphics.Width + graphics.Height) / 2;
+
                     CameraNode.Translate(Vector3.UnitX * X * value * timeStep);
                     CameraNode.Translate(Vector3.UnitY * -Y * value * timeStep);
+                    //This uses the same sphere clamping trick as SimpleMoveCamera2D.
 
-                    //if (A && B)
-                    //CameraNode.Translate(Vector3.UnitY * value * timeStep);
-                    ////else if( !A && !B )
-                    //    CameraNode.Translate(-Vector3.UnitY * value * timeStep);
-                    ////else if (A && !B)
-                    //    CameraNode.Translate(Vector3.UnitX * value * timeStep);
-                    //else if (!A && B)
-                    //    CameraNode.Translate(-Vector3.UnitX * value * timeStep);
-
-
-                    //CameraNode.Rotation = new Quaternion(Pitch, Yaw, 0);
-                    //CameraNode.Phi -= Pitch * timeStep;
-                    //CameraNode.Theta -= Yaw * timeStep;
                 }
                 else
                 {
@@ -502,69 +464,7 @@ namespace RenderCube
                     SetPanelMode(PanelMode.Node);
                     return;
 
-            }
-
-            var renderer = Renderer;
-            switch (e.Key)
-            {
-                //    case Key.N1:
-                //        var quality = renderer.TextureQuality;
-                //        ++quality;
-                //        if (quality > 2)
-                //            quality = 0;
-                //        renderer.TextureQuality = quality;
-                //        break;
-
-                //    case Key.N2:
-                //        var mquality = renderer.MaterialQuality;
-                //        ++mquality;
-                //        if (mquality > 2)
-                //            mquality = 0;
-                //        renderer.MaterialQuality = mquality;
-                //        break;
-
-                //    case Key.N3:
-                //        renderer.SpecularLighting = !renderer.SpecularLighting;
-                //        break;
-
-                //    case Key.N4:
-                //        renderer.DrawShadows = !renderer.DrawShadows;
-                //        break;
-
-                //    case Key.N5:
-                //        var shadowMapSize = renderer.ShadowMapSize;
-                //        shadowMapSize *= 2;
-                //        if (shadowMapSize > 2048)
-                //            shadowMapSize = 512;
-                //        renderer.ShadowMapSize = shadowMapSize;
-                //        break;
-
-                //    // shadow depth and filtering quality
-                //    case Key.N6:
-                //        var q = (int)renderer.ShadowQuality++;
-                //        if (q > 3)
-                //            q = 0;
-                //        renderer.ShadowQuality = (ShadowQuality)q;
-                //        break;
-
-                //    // occlusion culling
-                //    case Key.N7:
-                //        var o = !(renderer.MaxOccluderTriangles > 0);
-                //        renderer.MaxOccluderTriangles = o ? 5000 : 0;
-                //        break;
-
-                //    // instancing
-                //    case Key.N8:
-                //        renderer.DynamicInstancing = !renderer.DynamicInstancing;
-                //        break;
-
-                //    case Key.N9:
-                //        Image screenshot = new Image();
-                //        Graphics.TakeScreenShot(screenshot);
-                //        screenshot.SavePNG(FileSystem.ProgramDir + $"Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
-                //        break;
-            }
-        }
+            }        }
 
         void InitTouchInput()
         {
