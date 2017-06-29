@@ -16,24 +16,12 @@ namespace RenderCube
         RangeSlider RefractSlider;
         public ControlBar ControlBar;
         MaterialHelper material;
-        ResourceCache ResourceCache;
-        //public MaterialPanel(UIElement parent, Material m, ResourceCache r) : base()
-        //{
-           
-        //    this.material = new MaterialHelper(m);
-            
-        //    this.material.SetAll();
-        //    this.ResourceCache = r;
-        //    parent.AddChild(this);
-            
-        //    this.SetupPanel();
-            
 
-        //}
-        public MaterialPanel(UIElement parent, MaterialHelper m, ResourceCache r) : base()
+
+
+        public MaterialPanel(UIElement parent, MaterialHelper mh, ResourceCache r) : base(r)
         {
-            this.material = m;
-            this.ResourceCache = r;
+            this.material = mh;
             parent.AddChild(this);
             this.material.SetAll();
             this.Name = "MaterialPanel";
@@ -61,6 +49,7 @@ namespace RenderCube
             
 
             this.AddChild(this.ControlBar);
+            
             this.ControlBar.SetStyleAuto(null);
             //this.ControlBar.SetFixedWidth(this.Width);
             if (material.isSet("RefractIndex"))

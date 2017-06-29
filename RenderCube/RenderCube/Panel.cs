@@ -10,10 +10,10 @@ namespace RenderCube
 {
     class Panel : Window
     {
-        //private ResourceCache cache;
-        public Panel() : base()
+        protected ResourceCache ResourceCache;
+        public Panel(ResourceCache Cache) : base()
         {
-            //this.cache = r;
+            ResourceCache = Cache;
         }
         protected RangeSlider CreateSlider( string label, Single minRange = 0.0f, Single maxRange = 1.0f )
         {
@@ -25,8 +25,6 @@ namespace RenderCube
         Button CreateButton(int x, int y, int xSize, int ySize, string text)
         {
             
-            //Font font = cache.GetFont("Fonts/Font.ttf");
-
             // Create the button and center the text onto it
             Button button = new Button();
             this.AddChild(button);
@@ -38,19 +36,9 @@ namespace RenderCube
             button.AddChild(buttonText);
             buttonText.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
             buttonText.SetFontSize(20);
-            //buttonText.SetFont(font, 20);
             buttonText.Value = text;
 
             return button;
         }
-        //public new bool SetStyleAuto(Urho.Resources.XmlFile file)
-        //{
-        //    bool ret = base.SetStyleAuto(file);
-        //    foreach (UIElement e in this.Children)
-        //    {
-        //        ret = ret && e.SetStyleAuto(file);
-        //    }
-        //    return ret;
-        //}
     }
 }

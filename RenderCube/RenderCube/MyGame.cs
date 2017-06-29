@@ -40,20 +40,20 @@ using Urho.Resources;
 
 namespace RenderCube
 {
-    public enum PanelMode { Material, Model };
+    public enum PanelMode { Material, Node };
     public class MyGame : Application
     {
 
         Scene scene;
 
-        UrhoConsole console;
-        DebugHud debugHud;
-        PanelMode panelMode;
-        string currentModel; //this is the key that tells us which model is currently selected
-        Panel currentPanel;
-        MaterialPanel materialpanel;
-        ModelPanel modelpanel;
-        Camera camera;
+        UrhoConsole Console;
+        DebugHud DebugHud;
+        PanelMode PanelMode;
+        public string CurrentModel; //this is the key that tells us which model is currently selected
+        Panel CurrentPanel;
+        MaterialPanel MaterialPanel;
+        NodePanel NodePanel;
+        Camera Camera;
         Dictionary<string, XmlFile> materialxml;
         Dictionary<string, Model> models;
         Dictionary<string, Node> userNodes = new Dictionary<string, Node>();
@@ -66,11 +66,15 @@ namespace RenderCube
         protected LookSphereNode CameraNode { get; set; }
         protected MonoDebugHud MonoDebugHud { get; set; }
         private Vector3 currentPosition = new Vector3(0.0f, 0.0f, 0.0f);
-        public Vector3 nextPosition { get {
+        public Vector3 nextPosition
+        {
+            get
+            {
                 Vector3 ret = currentPosition;
                 currentPosition += new Vector3(0.0f, 0.0f, 2.0f);
                 return ret;
-            } }
+            }
+        }
         [Preserve]
         public MyGame(ApplicationOptions options = null) : base(options) { }
 
@@ -151,79 +155,92 @@ namespace RenderCube
 
         public void SetPanelMode(PanelMode mode)
         {
-            if (currentPanel != null)
+            if (CurrentPanel != null)
             {
-                    currentPanel.Visible = false;
-                    //currentPanel.Remove(); //this doesn't work, so we just leave all the invisible panels.  This is a leak.
-                    currentPanel = null;
+                CurrentPanel.Visible = false;
+                //currentPanel.Remove(); //this doesn't work, so we just leave all the invisible panels.  This is a leak.
+                CurrentPanel = null;
             }
             switch (mode)
             {
                 case PanelMode.Material:
 
-                    materialpanel = new MaterialPanel(UI.Root, userMaterials[currentModel], ResourceCache);
-                    materialpanel.Visible = true;
+                    MaterialPanel = new MaterialPanel(UI.Root, userMaterials[CurrentModel], ResourceCache);
+                    MaterialPanel.Visible = true;
 
-                    materialpanel.ControlBar.OnPrevious = (args => this.PreviousPanelMode());
-                    materialpanel.ControlBar.OnNext = (args => this.NextPanelMode());
-                    materialpanel.ControlBar.OnCube = (args => this.SelectModel("Box"));
-                    materialpanel.ControlBar.OnSuzanne = (args => this.SelectModel("Suzanne"));
-                    materialpanel.ControlBar.OnTeapot = (args => this.SelectModel("Teapot"));
-                    currentPanel = materialpanel;
-                    this.panelMode = mode;
+                    MaterialPanel.ControlBar.OnPrevious = (args => this.PreviousPanelMode());
+                    MaterialPanel.ControlBar.OnNext = (args => this.NextPanelMode());
+                    MaterialPanel.ControlBar.OnCube = (args => this.SelectModel("Box"));
+                    MaterialPanel.ControlBar.OnSuzanne = (args => this.SelectModel("Suzanne"));
+                    MaterialPanel.ControlBar.OnTeapot = (args => this.SelectModel("Teapot"));
+                    CurrentPanel = MaterialPanel;
+                    this.PanelMode = mode;
                     break;
 
-                case PanelMode.Model:
+                case PanelMode.Node:
 
-                    modelpanel = new ModelPanel(UI.Root, scene, ResourceCache);
-                    modelpanel.ControlBar.OnPrevious = (args => this.PreviousPanelMode());
-                    modelpanel.ControlBar.OnNext = (args => this.NextPanelMode());
-                    if (Platform == Platforms.Android)
+                    NodePanel = new NodePanel(UI.Root, userNodes[CurrentModel], ResourceCache);
+                    NodePanel.ControlBar.OnPrevious = (args => this.PreviousPanelMode());
+                    NodePanel.ControlBar.OnNext = (args => this.NextPanelMode());
+                    NodePanel.ControlBar.OnCube = (args => this.SelectModel("Box"));
+                    NodePanel.ControlBar.OnSuzanne = (args => this.SelectModel("Suzanne"));
+                    NodePanel.ControlBar.OnTeapot = (args => this.SelectModel("Teapot"));
+                    NodePanel.PositionField.OnTextFinished = (args =>
                     {
-                        modelpanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
-                    }
-                    modelpanel.RefreshList();
-                    currentPanel = this.modelpanel;
-                    this.panelMode = mode;
+                        userNodes[CurrentModel].Position = args.Value;
+                        CameraNode.UpdatePosition();
+                    });
+                    NodePanel.RotationField.OnTextFinished = (args =>
+                    {
+                        userNodes[CurrentModel].Rotation = new Quaternion(Vector3.Zero, 1.0f);
+                        userNodes[CurrentModel].Rotate(args.Value, TransformSpace.World);
+                        CameraNode.UpdatePosition();
+                    });
+                    NodePanel.ScaleSlider.SliderChanged += (args) => {
+                        userNodes[CurrentModel].Scale = new Vector3(args.Value, args.Value, args.Value);
+                        };
+
+                    CurrentPanel = this.NodePanel;
+                    this.PanelMode = mode;
                     break;
-                    
+
                 default:
-                    this.panelMode = mode;
+                    this.PanelMode = mode;
                     break;
-                
+
             }
             if (Platform == Platforms.Android)
             {
-                currentPanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
-                Renderer.SetViewport(0, new Viewport(Context, scene, camera, new IntRect(0, currentPanel.Height, Graphics.Width, Graphics.Height), null));
+                CurrentPanel.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
+                Renderer.SetViewport(0, new Viewport(Context, scene, Camera, new IntRect(0, CurrentPanel.Height, Graphics.Width, Graphics.Height), null));
             }
             else
-                Renderer.SetViewport(0, new Viewport(Context, scene, camera, new IntRect(0, 0, Graphics.Width, Graphics.Height - currentPanel.Height), null));
+                Renderer.SetViewport(0, new Viewport(Context, scene, Camera, new IntRect(0, 0, Graphics.Width, Graphics.Height - CurrentPanel.Height), null));
 
         }
 
         public void PreviousPanelMode()
         {
-            switch (this.panelMode)
+            switch (this.PanelMode)
             {
                 case (PanelMode.Material):
-                    this.SetPanelMode(PanelMode.Model);
+                    this.SetPanelMode(PanelMode.Node);
 
                     break;
-                case (PanelMode.Model):
+                case (PanelMode.Node):
                     this.SetPanelMode(PanelMode.Material);
                     break;
             }
         }
         public void NextPanelMode()
         {
-            switch (this.panelMode)
+            switch (this.PanelMode)
             {
                 case (PanelMode.Material):
-                    this.SetPanelMode(PanelMode.Model);
+                    this.SetPanelMode(PanelMode.Node);
 
                     break;
-                case (PanelMode.Model):
+                case (PanelMode.Node):
                     this.SetPanelMode(PanelMode.Material);
                     break;
             }
@@ -235,25 +252,28 @@ namespace RenderCube
             modelnode.Position = this.nextPosition;
             modelnode.SetScale(1f);
             modelnode.Rotation = new Quaternion(x: 0, y: 0, z: 0);
-
-            currentModel = name;
+            modelnode.Name = name;
+            CurrentModel = name;
             //The box material is set up as 50% texture and 50% cubemap
-            userNodes.Add(currentModel, modelnode);
+            userNodes.Add(CurrentModel, modelnode);
 
             StaticModel model1 = modelnode.CreateComponent<StaticModel>();
             model1.Model = models[name];
 
 
             MaterialHelper material1 = new MaterialHelper(materialxml["Default"]);
-            userMaterials.Add(currentModel, material1);
+            material1.RefractIndex = 0.66f;
+            material1.MatRefractColor = new Vector3(1.0f, 1.0f, 1.0f);
+            userMaterials.Add(CurrentModel, material1);
 
             model1.SetMaterial(material1);
 
         }
-        void SelectModel(string name) {
-            currentModel = name;
+        void SelectModel(string name)
+        {
+            CurrentModel = name;
             CameraNode.UpdatePosition();
-            SetPanelMode(this.panelMode);
+            SetPanelMode(this.PanelMode);
 
         }
         void CreateScene()
@@ -266,16 +286,16 @@ namespace RenderCube
             this.AddModel("Suzanne");
             this.AddModel("Box");
             this.AddModel("Teapot");
-            currentModel = "Box";
+            CurrentModel = "Box";
             //correct for teapot model's origin
             //userNodes["Teapot"].Position += new Vector3(0.0f, -0.5f, 0.0f); 
 
             //Button b = CreateButton(10, 10, 100, 100, "test");
             // Box
 
-            
-            
-            
+
+
+
             //BoxMaterial.SetShaderParameter("MatEnvMapColor", new Vector3(1.0f, 1.0f, 1.0f));
             //BoxMaterial.SetShaderParameter("MatDiffColor", new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
@@ -291,7 +311,7 @@ namespace RenderCube
             light.Brightness = 0.9f;
             lightNode.Position = new Vector3(x: 5, y: 5, z: 8);
 
-            
+
             //skybox
             var skyNode = scene.CreateChild("Sky");
             skyNode.SetScale(500.0f); // The scale actually does not matter
@@ -301,11 +321,11 @@ namespace RenderCube
 
             var origin = new Vector3(0.0f, 0.0f, 0.0f);
             // Camera
-            CameraNode = new LookSphereNode(name: "camera", center: () => userNodes[currentModel].Position);
+            CameraNode = new LookSphereNode(name: "camera", center: () => userNodes[CurrentModel].Position);
             CameraNode.Radius = 4.0f;
 
             scene.AddChild(CameraNode);
-            camera = CameraNode.CreateComponent<Camera>();
+            Camera = CameraNode.CreateComponent<Camera>();
             SetPanelMode(PanelMode.Material);
             // Viewport
             //Renderer.SetViewport(0, new Viewport(Context, scene, camera, null));
@@ -371,14 +391,14 @@ namespace RenderCube
             //    if (Pitch > 0) Pitch = MathHelper.Clamp(Pitch - (0.01f * timeStep), 0, 100);
             //    if (Yaw > 0) Yaw = MathHelper.Clamp(Yaw - (0.01f * timeStep), 0, 100);
             //}
-            
+
             var input = Input;
             for (uint i = 0, num = input.NumTouches; i < num; ++i)
             {
                 TouchState state = input.GetTouch(i);
                 if (state.TouchedElement != null)
                     continue;
-                if (state.Position.Y < this.currentPanel.Height) continue;
+                if (state.Position.Y < this.CurrentPanel.Height) continue;
                 if (state.Pressure > 0.0f)
                 {
                     var camera = CameraNode.GetComponent<Camera>();
@@ -387,7 +407,7 @@ namespace RenderCube
 
                     var graphics = Graphics;
                     float X = (float)state.Position.X - (graphics.Width / 2);
-                    float Y = (float)state.Position.Y - this.currentPanel.Height - ((graphics.Height - this.currentPanel.Height)/2);
+                    float Y = (float)state.Position.Y - this.CurrentPanel.Height - ((graphics.Height - this.CurrentPanel.Height) / 2);
                     //Yaw += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.X;
                     //Pitch += TouchSensitivity * camera.Fov / graphics.Height * state.Delta.Y;
                     float value = 0.01f;
@@ -404,7 +424,7 @@ namespace RenderCube
                     //    CameraNode.Translate(Vector3.UnitX * value * timeStep);
                     //else if (!A && B)
                     //    CameraNode.Translate(-Vector3.UnitX * value * timeStep);
-                    
+
 
                     //CameraNode.Rotation = new Quaternion(Pitch, Yaw, 0);
                     //CameraNode.Phi -= Pitch * timeStep;
@@ -440,29 +460,7 @@ namespace RenderCube
             UI.Root.AddChild(textElement);
         }
 
-        Slider CreateSlider(int x, int y, int xSize, int ySize, string text)
-        {
-            UIElement root = UI.Root;
-            ResourceCache cache = ResourceCache;
-            Font font = cache.GetFont("Fonts/Anonymous Pro.ttf");
-            // Create text and slider below it
-            Text sliderText = new Text();
-            root.AddChild(sliderText);
-            sliderText.SetPosition(x, y);
-            sliderText.SetFont(font, 12);
-            sliderText.Value = text;
 
-            Slider slider = new Slider();
-            root.AddChild(slider);
-            slider.SetStyleAuto(null);
-            slider.SetPosition(x, y + 20);
-            slider.SetSize(xSize, ySize);
-            // Use 0-1 range for controlling sound/music master volume
-            slider.Range = 1.0f;
-
-            return slider;
-        }
- 
 
 
         void SetWindowAndTitleIcon()
@@ -476,12 +474,12 @@ namespace RenderCube
         void CreateConsoleAndDebugHud()
         {
             var xml = ResourceCache.GetXmlFile("UI/DefaultStyle.xml");
-            console = Engine.CreateConsole();
-            console.DefaultStyle = xml;
-            console.Background.Opacity = 0.8f;
+            Console = Engine.CreateConsole();
+            Console.DefaultStyle = xml;
+            Console.Background.Opacity = 0.8f;
 
-            debugHud = Engine.CreateDebugHud();
-            debugHud.DefaultStyle = xml;
+            DebugHud = Engine.CreateDebugHud();
+            DebugHud.DefaultStyle = xml;
         }
 
         void HandleKeyDown(KeyDownEventArgs e)
@@ -492,79 +490,79 @@ namespace RenderCube
                     Exit();
                     return;
                 case Key.F1:
-                    console.Toggle();
+                    Console.Toggle();
                     return;
                 case Key.F2:
-                    debugHud.ToggleAll();
+                    DebugHud.ToggleAll();
                     return;
                 case Key.Up:
                     PreviousPanelMode();
                     return;
                 case Key.Down:
-                    SetPanelMode(PanelMode.Model);
+                    SetPanelMode(PanelMode.Node);
                     return;
-              
+
             }
 
             var renderer = Renderer;
             switch (e.Key)
             {
-            //    case Key.N1:
-            //        var quality = renderer.TextureQuality;
-            //        ++quality;
-            //        if (quality > 2)
-            //            quality = 0;
-            //        renderer.TextureQuality = quality;
-            //        break;
+                //    case Key.N1:
+                //        var quality = renderer.TextureQuality;
+                //        ++quality;
+                //        if (quality > 2)
+                //            quality = 0;
+                //        renderer.TextureQuality = quality;
+                //        break;
 
-            //    case Key.N2:
-            //        var mquality = renderer.MaterialQuality;
-            //        ++mquality;
-            //        if (mquality > 2)
-            //            mquality = 0;
-            //        renderer.MaterialQuality = mquality;
-            //        break;
+                //    case Key.N2:
+                //        var mquality = renderer.MaterialQuality;
+                //        ++mquality;
+                //        if (mquality > 2)
+                //            mquality = 0;
+                //        renderer.MaterialQuality = mquality;
+                //        break;
 
-            //    case Key.N3:
-            //        renderer.SpecularLighting = !renderer.SpecularLighting;
-            //        break;
+                //    case Key.N3:
+                //        renderer.SpecularLighting = !renderer.SpecularLighting;
+                //        break;
 
-            //    case Key.N4:
-            //        renderer.DrawShadows = !renderer.DrawShadows;
-            //        break;
+                //    case Key.N4:
+                //        renderer.DrawShadows = !renderer.DrawShadows;
+                //        break;
 
-            //    case Key.N5:
-            //        var shadowMapSize = renderer.ShadowMapSize;
-            //        shadowMapSize *= 2;
-            //        if (shadowMapSize > 2048)
-            //            shadowMapSize = 512;
-            //        renderer.ShadowMapSize = shadowMapSize;
-            //        break;
+                //    case Key.N5:
+                //        var shadowMapSize = renderer.ShadowMapSize;
+                //        shadowMapSize *= 2;
+                //        if (shadowMapSize > 2048)
+                //            shadowMapSize = 512;
+                //        renderer.ShadowMapSize = shadowMapSize;
+                //        break;
 
-            //    // shadow depth and filtering quality
-            //    case Key.N6:
-            //        var q = (int)renderer.ShadowQuality++;
-            //        if (q > 3)
-            //            q = 0;
-            //        renderer.ShadowQuality = (ShadowQuality)q;
-            //        break;
+                //    // shadow depth and filtering quality
+                //    case Key.N6:
+                //        var q = (int)renderer.ShadowQuality++;
+                //        if (q > 3)
+                //            q = 0;
+                //        renderer.ShadowQuality = (ShadowQuality)q;
+                //        break;
 
-            //    // occlusion culling
-            //    case Key.N7:
-            //        var o = !(renderer.MaxOccluderTriangles > 0);
-            //        renderer.MaxOccluderTriangles = o ? 5000 : 0;
-            //        break;
+                //    // occlusion culling
+                //    case Key.N7:
+                //        var o = !(renderer.MaxOccluderTriangles > 0);
+                //        renderer.MaxOccluderTriangles = o ? 5000 : 0;
+                //        break;
 
-            //    // instancing
-            //    case Key.N8:
-            //        renderer.DynamicInstancing = !renderer.DynamicInstancing;
-            //        break;
+                //    // instancing
+                //    case Key.N8:
+                //        renderer.DynamicInstancing = !renderer.DynamicInstancing;
+                //        break;
 
-            //    case Key.N9:
-            //        Image screenshot = new Image();
-            //        Graphics.TakeScreenShot(screenshot);
-            //        screenshot.SavePNG(FileSystem.ProgramDir + $"Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
-            //        break;
+                //    case Key.N9:
+                //        Image screenshot = new Image();
+                //        Graphics.TakeScreenShot(screenshot);
+                //        screenshot.SavePNG(FileSystem.ProgramDir + $"Data/Screenshot_{GetType().Name}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss", CultureInfo.InvariantCulture)}.png");
+                //        break;
             }
         }
 

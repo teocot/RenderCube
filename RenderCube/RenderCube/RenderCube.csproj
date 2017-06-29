@@ -35,11 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ControlBar.cs" />
+    <Compile Include="QuaternionField.cs" />
+    <Compile Include="VectorField.cs" />
     <Compile Include="MaterialHelper.cs" />
     <Compile Include="MaterialPanel.cs" />
     <Compile Include="LookSphereNode.cs" />
     <Compile Include="JoystickLayoutPatches.cs" />
-    <Compile Include="ModelPanel.cs" />
+    <Compile Include="NodePanel.cs" />
     <Compile Include="MyGame.cs" />
     <Compile Include="Panel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

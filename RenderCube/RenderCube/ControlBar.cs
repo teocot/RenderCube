@@ -52,15 +52,15 @@ namespace RenderCube
             this.AddChild(new Spacer()); 
             this.AddChild(NextButton);
 
-            //prevButton.SetStyle("LeftButton", null);  // Couldn't get this to work.  This would be ideal.
+            //prevButton.SetStyle("LeftButton", null);  // Couldn't get this to work--Used "<" instead. This would be ideal.
         }
 
         Button CreateButton(string text, HorizontalAlignment align = HorizontalAlignment.Left)
         {
-            var button = new Button();
-            // Create the button and center the text onto it
-            button.SetFixedSize(36, 36);
+            var Button = new Button();
 
+            // Create the button and center the text onto it
+            Button.SetFixedSize(36, 36);
             Label = new Text()
             {
                 Value = text,
@@ -69,21 +69,12 @@ namespace RenderCube
             };
             Label.SetFont(Font, 20);
 
-            button.AddChild(Label);
+            Button.AddChild(Label);
 
-            button.SetFixedWidth(button.GetChild(0).Width + 16);
-            button.SetStyleAuto(null);
-            button.HorizontalAlignment = align;
-            return button;
+            Button.SetFixedWidth(Button.GetChild(0).Width + 16);
+            Button.SetStyleAuto(null);
+            Button.HorizontalAlignment = align;
+            return Button;
         }
-        //public new bool SetStyleAuto(Urho.Resources.XmlFile file)
-        //{
-        //    bool ret = base.SetStyleAuto(file);
-        //    Label.SetStyleAuto(file);
-        //    prevButton.SetStyle("LeftButton", file);
-
-
-        //    return ret;
-        //}
     }
 }

@@ -66,9 +66,6 @@ namespace RenderCube
                 SetParameters[key] = value;
             }
         }
-        //static public implicit operator MaterialHelper(Material m) {
-        //    return (MaterialHelper)m;
-        //}
         public Vector4 ParseVector4(string value)
         {
             char[] delim = { ' ' };
