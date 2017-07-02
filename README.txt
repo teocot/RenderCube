@@ -1,4 +1,37 @@
-Stage 1 Milestone for teodor5
+[Stage 2 Milestone for teodor5]
+
+Nothing has really changed for the setup.  
+
+[Getting Refraction to actually work]
+The only problem with the refraction is that the rays were inverted, so now they work as expected.
+
+
+[Bugs in Urhosharp and their workarounds]
+There were a couple wierd bugs in Urhosharp that I had to work around.  The most frustrating one
+is that UIElement.Remove() doesn't work.  I suspect this has to do with the child lists being readonly so
+they can mirror the unmanaged data structures in the Urho.dll. This means that the design choice of 
+dynamically creating dialogs and deleting them as necessary won't work.  For now, it just hides the panels
+which will eventually cause memory problems.  This should be fixed some day in the upstream Urhosharp library, but it
+could be fixed by saving references to each dialog on a per-model basis, which is silly but would avoid the memory leak.
+
+The other issue was the lack of Material.GetShaderParameter().  This meant that I had to keep track of the initial values
+in a shadow data structure I called MaterialHelper.  I also use a default material file that has known contents, So 
+I don't have to parse it manually.  TBH, dynamically changing material propterties is not that common in practice
+So I can understand why they did not prioritise implementing it, because it needs like 15 overloaded versions to
+cover all the possible data types.
+
+If I were starting this project with what I now know, I would probably just use urho3d(C++) with the Android NDK and not bother
+with Xamarin and .net until the wrapper library is more mature.
+
+
+
+
+
+
+
+
+
+[Stage 1 Milestone for teodor5]
 
 [Visual Studio Setup]
 
